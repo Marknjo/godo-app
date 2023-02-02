@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -15,6 +16,7 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { IActiveUser } from '../interfaces/i-active-user'
 import { TUserDoc, User } from './schema/user.schema'
 import { HashingService } from '../authentication/bcrypt/hashing.service'
+import { EPremiumSubscribers } from '../enums/e-roles.enum'
 
 @Injectable()
 export class UsersService {
@@ -105,6 +107,9 @@ export class UsersService {
     activeUser?: IActiveUser,
     filters?: FilterQuery<User>,
   ) {
+    // prevent user from updating other users fields
+    this.throwIfUpdatingOtherUsers(activeUser, userId)
+
     // handle updating
     const updatedUser = await this.userModel.findOneAndUpdate(
       {
@@ -156,6 +161,22 @@ export class UsersService {
    *
    * --------------------------------------------------------------
    */
+
+  /**
+   * prevent user from updating other users fields
+   * @param activeUser
+   * @param userId
+   */
+  private throwIfUpdatingOtherUsers(activeUser: IActiveUser, userId: string) {
+    if (
+      activeUser &&
+      activeUser.sub !== userId &&
+      activeUser.baseRole !== EPremiumSubscribers.ADMIN
+    ) {
+      throw new ForbiddenException(`Update not allow`)
+    }
+  }
+
   private throwIfUserNotFound(user: User, userId: string, action: string) {
     if (!user) {
       this.logger.error(`${action} user with ${userId} failed`)
