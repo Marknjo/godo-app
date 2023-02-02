@@ -17,8 +17,8 @@ export enum ERoles {
 }
 
 export enum EPremiumSubscribers {
-  TEAM_OWNER = ERoles.TEAM_USER,
-  PREMIUM_OWNER = ERoles.PREMIUM_USER,
+  TEAM_USER = ERoles.TEAM_USER,
+  PREMIUM_USER = ERoles.PREMIUM_USER,
   GUEST_USER = ERoles.GUEST_USER,
   ADMIN = ERoles.ADMIN,
 }
