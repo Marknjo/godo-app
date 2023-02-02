@@ -27,11 +27,13 @@ export class Team {
 
   @Prop({
     default: true,
+    index: true,
   })
   isActive?: boolean
 
   @Prop({
     default: false,
+    index: true,
   })
   isResigned?: boolean
 
