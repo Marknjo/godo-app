@@ -96,17 +96,19 @@ export class UsersService {
 
   async update(
     userId: string,
-    updateUserDto: UpdateUserDto,
-    activeUser: IActiveUser,
+    updateUserDto: Partial<
+      | UpdateUserDto
+      | {
+          totalTeamMembers: number
+        }
+    >,
+    activeUser?: IActiveUser,
     filters?: FilterQuery<User>,
   ) {
-    const isAdmin = activeUser.role.includes('admin')
-
     // handle updating
     const updatedUser = await this.userModel.findOneAndUpdate(
       {
         _id: userId,
-        ...(isAdmin ? {} : { username: activeUser.sub }),
         ...filters,
       },
       updateUserDto,
