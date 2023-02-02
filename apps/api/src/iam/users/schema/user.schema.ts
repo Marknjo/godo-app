@@ -64,6 +64,11 @@ export class User {
 
   @Prop()
   passwordResetExpiresAt?: Date
+
+  @Prop({
+    default: 0,
+  })
+  totalTeamMembers?: number
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
