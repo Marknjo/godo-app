@@ -17,4 +17,11 @@ export interface IActiveUser {
    * - for members baseRole with be equal to accountOwner role
    */
   baseRole: EPremiumSubscribers
+
+  /**
+   * Maintains total number of team members a premium user has
+   *  - Allows us to limit number of team members a premium account
+   *   can have
+   */
+  totalTeamMembers: number
 }
