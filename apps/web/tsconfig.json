@@ -1,0 +1,19 @@
+{
+  "extends": "@mj/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "strict": false
+  },
+ "include": [".", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
