@@ -1,4 +1,3 @@
-'use client'
 
 import { Button } from '../../components/Buttons'
 import { Row } from '../../components/Layouts'
