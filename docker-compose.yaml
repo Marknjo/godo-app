@@ -4,7 +4,7 @@ services:
     restart: always
     container_name: godo-db
     ports:
-      - 27017:27017
+      - 27019:27017
     env_file:
       - ./.env.local
     volumes:
@@ -15,7 +15,7 @@ services:
     restart: always
     container_name: godo-test-db
     ports:
-      - 27018:27017
+      - 27020:27017
     env_file:
       - ./.env.test.local
 
@@ -24,7 +24,7 @@ services:
     restart: always
     container_name: godo-admin
     ports:
-      - 8081:8081
+      - 8083:8081
     env_file:
       - ./.env.local
 
