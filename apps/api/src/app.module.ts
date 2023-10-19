@@ -1,12 +1,17 @@
 import { env } from 'process'
 import { Module } from '@nestjs/common'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { MongooseModule } from '@nestjs/mongoose'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { ConfigModule, ConfigService } from '@nestjs/config'
 import validationSchema from './common/utils/envs.config'
 import appConfig from './common/utils/app.config'
-import { MongooseModule } from '@nestjs/mongoose'
-import { IamModule } from './iam/iam.module';
+import { IamModule } from './iam/iam.module'
+import { SerializeInterceptor } from './common/interceptors/serialize.interceptor'
+
+console.log(AppService.name)
 
 @Module({
   imports: [
@@ -50,6 +55,12 @@ import { IamModule } from './iam/iam.module';
     IamModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SerializeInterceptor,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
