@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { AppService } from './app.service'
 import { Serialize } from './common/decorators/serialize.decorator'
 import { AppResponseDto } from './dtos/app-response.dto'
-import { MongoIdPipe } from './common/pipes/mongo-id.pipe'
+import { PerseMongoIdPipe } from './common/pipes/perse-mongo-id.pipe'
 import { CreateAppDto } from './dtos/create-app.dto'
 import { AppQueryDto } from './dtos/app-query.dto'
 
@@ -29,7 +29,7 @@ export class AppController {
    * @returns
    */
   @Get(':id')
-  findOneHello(@Param('id', MongoIdPipe) id: string) {
+  findOneHello(@Param('id', PerseMongoIdPipe) id: string) {
     return {
       value: `${id}`,
     }

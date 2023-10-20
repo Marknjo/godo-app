@@ -54,8 +54,6 @@ export class SerializeInterceptor implements NestInterceptor {
       },
     )
 
-    console.log(dtoDecorator)
-
     // transform decorator dto from dtoDecorator & merge with default response
     if (dtoDecorator) {
       const data = plainToInstance(dtoDecorator, transformedData.data, {

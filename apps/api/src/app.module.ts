@@ -11,8 +11,6 @@ import appConfig from './common/utils/app.config'
 import { IamModule } from './iam/iam.module'
 import { SerializeInterceptor } from './common/interceptors/serialize.interceptor'
 
-console.log(AppService.name)
-
 @Module({
   imports: [
     ConfigModule.forRoot({
