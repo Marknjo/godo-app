@@ -33,8 +33,8 @@ export async function setup(app: INestApplication) {
 
   /// Setup swagger
   const config = new DocumentBuilder()
-    .setTitle('Storybook With Solito')
-    .setDescription('The Storybook With Solito API')
+    .setTitle('GoDo Api Documentation')
+    .setDescription('GoDo Project Management API')
     .setVersion('0.0.1')
     .addTag('sws')
     .build()
