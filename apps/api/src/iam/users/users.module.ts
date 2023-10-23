@@ -15,14 +15,14 @@ import { BcryptService } from '../authentication/bcrypt/bcrypt.service'
           const schema = UserSchema
 
           // hooks
-          schema.pre('save', function (next) {
-            if (!this.isNew && this.isModified()) return next()
+          // schema.pre('save', function (next) {
+          //   if (!this.isNew && this.isModified()) return next()
 
-            this.password = this.passwordConfirm
-            this.passwordConfirm = undefined
+          //   this.password = this.passwordConfirm
+          //   this.passwordConfirm = undefined
 
-            return next()
-          })
+          //   return next()
+          // })
 
           return schema
         },

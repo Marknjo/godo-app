@@ -27,16 +27,16 @@ export class User {
   })
   password: string
 
-  @Prop({
-    type: String,
-    validate: {
-      validator: function (value: string) {
-        return this.password === value
-      },
-      message: 'Password do not match',
-    },
-  })
-  passwordConfirm?: string
+  // @Prop({
+  //   type: String,
+  //   validate: {
+  //     validator: function (value: string) {
+  //       return this.password === value
+  //     },
+  //     message: 'Password do not match',
+  //   },
+  // })
+  // passwordConfirm?: string
 
   @Prop({
     maxLength: [1000, 'Bio must not exceed 1000 characters'],
