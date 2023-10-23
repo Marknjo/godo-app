@@ -1,8 +1,10 @@
 import { Transform } from 'class-transformer'
 import {
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsStrongPassword,
   MaxLength,
   MinLength,
 } from 'class-validator'
@@ -16,7 +18,7 @@ export class CreateUserDto {
   username: string
 
   @IsNotEmpty()
-  @IsString()
+  @IsEmail({}, { message: 'Invalid email address' })
   @MaxLength(100, { message: 'Email must not exceed 100 characters' })
   @Transform(({ value }) => value.trim())
   email: string
@@ -25,6 +27,7 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(255, { message: 'Password must not exceed 255 characters' })
   @MinLength(6, { message: 'Password should be greater than 6 character' })
+  @IsStrongPassword()
   @Transform(({ value }) => value.trim())
   password: string
 
