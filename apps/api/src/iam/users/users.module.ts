@@ -12,6 +12,16 @@ import { User, UserSchema } from './schema/user.schema'
         useFactory: () => {
           const schema = UserSchema
 
+          // hooks
+          schema.pre('save', function (next) {
+            if (!this.isNew && this.isModified()) return next()
+
+            this.password = this.passwordConfirm
+            this.passwordConfirm = undefined
+
+            return next()
+          })
+
           return schema
         },
       },
