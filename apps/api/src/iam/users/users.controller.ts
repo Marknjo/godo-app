@@ -21,11 +21,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(
-    @Body() createUserDto: CreateUserDto,
-    @ActiveUser() activeUser: IActiveUser,
-  ) {
-    return this.usersService.create(createUserDto, activeUser)
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto)
   }
 
   @Get()

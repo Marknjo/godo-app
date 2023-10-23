@@ -1,4 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  LoggerService,
+} from '@nestjs/common'
 import { Model } from 'mongoose'
 
 import { CreateUserDto } from './dto/create-user.dto'
@@ -9,13 +16,50 @@ import { InjectModel } from '@nestjs/mongoose'
 
 @Injectable()
 export class UsersService {
+  private readonly logger: LoggerService = new Logger()
+
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<TUserDoc>,
   ) {}
 
-  async create(createUserDto: CreateUserDto, activeUser: IActiveUser) {
-    return 'This action adds a new user'
+  async create(createUserDto: CreateUserDto) {
+    try {
+      // data preparation
+      const userDetails = new User()
+      userDetails.username = createUserDto.username
+      userDetails.email = createUserDto.email
+      userDetails.password = createUserDto.password
+      userDetails.passwordConfirm = createUserDto.passwordConfirm
+      userDetails.bio = createUserDto?.bio
+      userDetails.profileImg = createUserDto?.profileImg
+
+      // @TODO: hash password
+
+      // create new user
+      const newUser = await this.userModel.create(userDetails)
+
+      // @TODO: sign token - not applicable
+
+      // @TODO: Send email to created user to invite them
+
+      return newUser
+    } catch (error) {
+      // logging errors
+      this.logger.warn(`Creating user failed`)
+      this.logger.error(error)
+
+      // handle errors
+      if (error.name.toLowerCase().includes('validation')) {
+        throw new BadRequestException(error.message)
+      }
+
+      if (error.code === 11000) {
+        throw new ConflictException(`Email already in use`)
+      }
+
+      throw new InternalServerErrorException('Error creating new user')
+    }
   }
 
   async findAll(activeUser: IActiveUser) {
