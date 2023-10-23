@@ -3,6 +3,8 @@ import { UsersService } from './users.service'
 import { UsersController } from './users.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { User, UserSchema } from './schema/user.schema'
+import { HashService } from '../authentication/bcrypt/hash.service'
+import { BcryptService } from '../authentication/bcrypt/bcrypt.service'
 
 @Module({
   imports: [
@@ -28,6 +30,12 @@ import { User, UserSchema } from './schema/user.schema'
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [
+    {
+      provide: HashService,
+      useClass: BcryptService,
+    },
+    UsersService,
+  ],
 })
 export class UsersModule {}
