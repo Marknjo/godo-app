@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
-export abstract class HashService {
+export abstract class HashingService {
   /**
    * An abstract method for implementing data hashing
    * @param data a string to hash

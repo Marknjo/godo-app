@@ -13,7 +13,7 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { IActiveUser } from '../interfaces/i-active-user'
 import { TUserDoc, User } from './schema/user.schema'
 import { InjectModel } from '@nestjs/mongoose'
-import { HashService } from '../authentication/bcrypt/hash.service'
+import { HashingService } from '../authentication/bcrypt/hashing.service'
 
 @Injectable()
 export class UsersService {
@@ -23,7 +23,7 @@ export class UsersService {
     @InjectModel(User.name)
     private readonly userModel: Model<TUserDoc>,
 
-    private readonly hashingService: HashService,
+    private readonly hashingService: HashingService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
