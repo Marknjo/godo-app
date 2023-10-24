@@ -6,14 +6,16 @@ import {
   Logger,
   LoggerService,
 } from '@nestjs/common'
-import { Model } from 'mongoose'
+import { FilterQuery, Model } from 'mongoose'
+import { InjectModel } from '@nestjs/mongoose'
 
+import { FactoryUtils } from 'src/common/services/factory.utils'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { IActiveUser } from '../interfaces/i-active-user'
 import { TUserDoc, User } from './schema/user.schema'
-import { InjectModel } from '@nestjs/mongoose'
 import { HashingService } from '../authentication/bcrypt/hashing.service'
+import { ERoles } from '../enums/e-roles.enum'
 
 @Injectable()
 export class UsersService {
@@ -24,6 +26,8 @@ export class UsersService {
     private readonly userModel: Model<TUserDoc>,
 
     private readonly hashingService: HashingService,
+
+    private readonly factoryUtils: FactoryUtils,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -66,8 +70,10 @@ export class UsersService {
     }
   }
 
-  async findAll(activeUser: IActiveUser) {
-    return `This action returns all users`
+  async findAll(filters: FilterQuery<User> = {}, activeUser: IActiveUser) {
+    return this.userModel.find({
+      ...filters,
+    })
   }
 
   async findOne(userId: string, activeUser: IActiveUser) {
