@@ -4,6 +4,7 @@ import { HashingService } from './authentication/bcrypt/hashing.service'
 import { BcryptService } from './authentication/bcrypt/bcrypt.service'
 import { AuthController } from './authentication/auth/auth.controller'
 import { AuthService } from './authentication/auth/auth.service'
+import { FactoryUtils } from 'src/common/services/factory.utils'
 
 @Module({
   imports: [UsersModule],
@@ -13,6 +14,7 @@ import { AuthService } from './authentication/auth/auth.service'
       useClass: BcryptService,
     },
     AuthService,
+    FactoryUtils,
   ],
   controllers: [AuthController],
 })
