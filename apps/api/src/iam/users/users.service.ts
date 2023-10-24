@@ -99,8 +99,30 @@ export class UsersService {
     userId: string,
     updateUserDto: UpdateUserDto,
     activeUser: IActiveUser,
+    filters?: FilterQuery<User>,
   ) {
-    return `This action updates a #${userId} user`
+    const isAdmin = activeUser.role.includes('admin')
+
+    // handle updating
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      {
+        _id: userId,
+        ...(isAdmin ? {} : { username: activeUser.sub }),
+        ...filters,
+      },
+      updateUserDto,
+      {
+        new: true,
+      },
+    )
+
+    // handle update errors
+    this.throwIfUserNotFound(updatedUser, userId, 'updating')
+
+    // response
+    this.logger.log(`User with id ${userId} was successfully updated`)
+
+    return updatedUser
   }
 
   async remove(userId: string, activeUser: IActiveUser) {
