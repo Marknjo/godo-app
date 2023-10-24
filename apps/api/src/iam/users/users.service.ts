@@ -126,7 +126,26 @@ export class UsersService {
   }
 
   async remove(userId: string, activeUser: IActiveUser) {
-    return `This action removes a #${userId} user`
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+
+    this.throwIfSelfDeletion(userId, whoIs)
+
+    this.throwIfSuperAdminDeletion(userId, activeUser)
+
+    // try and delete user
+    const deletedUser = await this.userModel.findOneAndDelete({
+      _id: userId,
+    })
+
+    this.throwIfUserNotFound(deletedUser, userId, 'deleting')
+
+    // message
+    const message = `User with ${userId} was successfully deleted`
+    this.logger.log(message)
+
+    return {
+      message,
+    }
   }
 
   /**
@@ -142,6 +161,38 @@ export class UsersService {
 
       throw new BadRequestException(
         `Oops! looks like  ${action} user with id ${userId} failed`,
+      )
+    }
+  }
+
+  /**
+   * A Admin manager cannot delete root admin
+   *  - Can't delete super admin
+   * @param userId
+   * @param activeUser
+   */
+  private throwIfSuperAdminDeletion(userId: string, activeUser: IActiveUser) {
+    if (userId === activeUser.sub) {
+      this.logger.warn(`Manager was trying to delete super admin 🤔🤔🤔`)
+
+      throw new BadRequestException(
+        `Your request to delete this user has been declined`,
+      )
+    }
+  }
+
+  /**
+   * Prevent a user from deleting themselves
+   * - users must not delete themselves
+   *
+   * @param userId
+   * @param whoIs
+   */
+  private throwIfSelfDeletion(userId: string, whoIs: string) {
+    if (userId === whoIs) {
+      this.logger.warn(`User was trying to delete themselves`)
+      throw new BadRequestException(
+        `Denied to delete user: Can't delete yourself`,
       )
     }
   }
