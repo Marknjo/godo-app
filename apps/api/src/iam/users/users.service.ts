@@ -76,8 +76,23 @@ export class UsersService {
     })
   }
 
-  async findOne(userId: string, activeUser: IActiveUser) {
-    return `This action returns a #${userId} user`
+  async findOne(
+    userId: string,
+    activeUser: IActiveUser,
+    filters?: FilterQuery<User>,
+  ) {
+    const isAdmin = activeUser.role.includes('admin')
+
+    const foundUser = await this.userModel.findOne({
+      _id: userId,
+      ...(isAdmin ? {} : { username: activeUser.sub }),
+      ...filters,
+    })
+
+    // validation
+    this.throwIfUserNotFound(foundUser, userId, 'finding')
+
+    return foundUser
   }
 
   async update(
@@ -90,5 +105,22 @@ export class UsersService {
 
   async remove(userId: string, activeUser: IActiveUser) {
     return `This action removes a #${userId} user`
+  }
+
+  /**
+   * --------------------------------------------------------------
+   *
+   *                     HELPER METHODS
+   *
+   * --------------------------------------------------------------
+   */
+  private throwIfUserNotFound(user: User, userId: string, action: string) {
+    if (!user) {
+      this.logger.error(`${action} user with ${userId} failed`)
+
+      throw new BadRequestException(
+        `Oops! looks like  ${action} user with id ${userId} failed`,
+      )
+    }
   }
 }
