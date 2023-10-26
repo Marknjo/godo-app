@@ -15,7 +15,6 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { IActiveUser } from '../interfaces/i-active-user'
 import { TUserDoc, User } from './schema/user.schema'
 import { HashingService } from '../authentication/bcrypt/hashing.service'
-import { ERoles } from '../enums/e-roles.enum'
 
 @Injectable()
 export class UsersService {
