@@ -7,6 +7,7 @@ import {
   MaxLength,
 } from 'class-validator'
 import { ERoles } from 'src/iam/enums/e-roles.enum'
+import { Role } from '../schema/role.schema'
 
 export class CreateRoleDto {
   @IsEnum(ERoles)
@@ -22,5 +23,5 @@ export class CreateRoleDto {
 
   @IsOptional()
   @IsMongoId()
-  assignedFor: string //parent feature
+  assignedFor: Role //parent feature
 }

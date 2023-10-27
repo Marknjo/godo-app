@@ -11,7 +11,7 @@ export class PerseRoleTypePipe implements PipeTransform {
   transform(value: string, _metadata: ArgumentMetadata) {
     if (!ERoleTypes[value.toLocaleUpperCase()]) {
       throw new BadRequestException(
-        `${value} is not a valid type; expects ${Object.values(ERoleTypes).join(
+        `${value} is not a valid role; expects ${Object.values(ERoleTypes).join(
           ' or ',
         )}`,
       )

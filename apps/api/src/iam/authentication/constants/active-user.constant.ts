@@ -1,1 +1,1 @@
-export const REQ_ACTIVE_USER = 'active-user'
+export const ACTIVE_USER_KEY = 'active-user-key'

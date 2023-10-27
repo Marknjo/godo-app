@@ -5,10 +5,11 @@ import { BcryptService } from './authentication/bcrypt/bcrypt.service'
 import { AuthController } from './authentication/auth/auth.controller'
 import { AuthService } from './authentication/auth/auth.service'
 import { FactoryUtils } from 'src/common/services/factory.utils'
-import { RolesModule } from './authorization/roles/roles.module';
+import { RolesModule } from './authorization/roles/roles.module'
+import { AccessesModule } from './authorization/accesses/accesses.module'
 
 @Module({
-  imports: [UsersModule, RolesModule],
+  imports: [UsersModule, RolesModule, AccessesModule],
   providers: [
     {
       provide: HashingService,

@@ -43,8 +43,6 @@ export class RolesService {
       roleDetails.description = createRoleDto.description
       roleDetails.name = createRoleDto?.name
 
-      // hash password
-
       // create new role
       const newRole = await this.rolesModel.create({
         ...roleDetails,
@@ -68,7 +66,9 @@ export class RolesService {
         )
       }
 
-      throw new InternalServerErrorException('Error creating new role')
+      throw new InternalServerErrorException(
+        'Failed to create new role. Please try again later.',
+      )
     }
   }
 

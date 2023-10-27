@@ -25,7 +25,7 @@ export class Role {
     type: SchemaTypes.ObjectId,
     ref: 'Role',
   })
-  assignedFor?: string
+  assignedFor?: Role
 
   @Prop({
     enum: {
