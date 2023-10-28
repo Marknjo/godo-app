@@ -7,36 +7,62 @@ import {
   Param,
   Delete,
 } from '@nestjs/common'
+import { FilterQuery } from 'mongoose'
+
+import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator'
+import { IActiveUser } from 'src/iam/interfaces/i-active-user'
+
 import { AccessesService } from './accesses.service'
 import { CreateAccessDto } from './dto/create-access.dto'
 import { UpdateAccessDto } from './dto/update-access.dto'
+import { Access } from './schema/access.schema'
 
-@Controller('accesses')
+@Controller({
+  path: 'accesses',
+  version: '1',
+})
 export class AccessesController {
   constructor(private readonly accessesService: AccessesService) {}
 
   @Post()
-  create(@Body() createAccessDto: CreateAccessDto) {
-    return this.accessesService.create(createAccessDto)
+  create(
+    @Body() createAccessDto: CreateAccessDto,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.accessesService.create(createAccessDto, activeUser)
   }
 
   @Get()
-  findAll() {
-    return this.accessesService.findAll()
+  findAll(
+    @ActiveUser() activeUser: IActiveUser,
+    filters?: FilterQuery<Access>,
+  ) {
+    return this.accessesService.findAll(activeUser, filters)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accessesService.findOne(+id)
+  @Get(':accessesId')
+  findOne(
+    @Param('accessesId', PerseMongoIdPipe) accessesId: string,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.accessesService.findOne(accessesId, activeUser)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccessDto: UpdateAccessDto) {
-    return this.accessesService.update(+id, updateAccessDto)
+  @Patch(':accessesId')
+  update(
+    @Param('accessesId', PerseMongoIdPipe) accessesId: string,
+    @Body() updateAccessDto: UpdateAccessDto,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.accessesService.update(accessesId, updateAccessDto, activeUser)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accessesService.remove(+id)
+  @Delete(':accessesId')
+  remove(
+    @Param('accessesId', PerseMongoIdPipe) accessesId: string,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.accessesService.remove(accessesId, activeUser)
   }
 }
