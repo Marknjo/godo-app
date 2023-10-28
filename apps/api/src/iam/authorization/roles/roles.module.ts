@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
+
+import { FactoryUtils } from 'src/common/services/factory.utils'
+
 import { RolesService } from './roles.service'
 import { RolesController } from './roles.controller'
 import { Role, RolesSchema } from './schema/role.schema'
-import { FactoryUtils } from 'src/common/services/factory.utils'
 
 @Module({
   imports: [
@@ -30,5 +32,6 @@ import { FactoryUtils } from 'src/common/services/factory.utils'
   ],
   controllers: [RolesController],
   providers: [RolesService, FactoryUtils],
+  exports: [RolesService],
 })
 export class RolesModule {}
