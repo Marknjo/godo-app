@@ -83,7 +83,11 @@ export class AccessesService {
   }
 
   async findAll(activeUser: IActiveUser, filters?: FilterQuery<Access>) {
-    return `This action returns all accesses ${activeUser}`
+    // @TODO: implement pagination
+    return this.accessesModel.find({
+      ...filters,
+      accountOwner: activeUser.sub,
+    })
   }
 
   async findOne(accessId: string, activeUser: IActiveUser) {
