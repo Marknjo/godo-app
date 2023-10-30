@@ -90,8 +90,22 @@ export class AccessesService {
     })
   }
 
-  async findOne(accessId: string, activeUser: IActiveUser) {
-    return `This action returns a #${accessId} access`
+  async findOne(
+    accessId: string,
+    activeUser: IActiveUser,
+    isEnabled?: boolean,
+  ) {
+    const foundRole = await this.accessesModel.findOne({
+      _id: accessId,
+      accountOwner: activeUser.sub,
+      ...(isEnabled ? { isEnabled: true } : {}),
+    })
+
+    if (!foundRole) {
+      throw new NotFoundException(`Access not found`)
+    }
+
+    return foundRole
   }
 
   async update(
