@@ -110,10 +110,30 @@ export class AccessesService {
 
   async update(
     accessId: string,
-    updateAccessDto: UpdateAccessDto,
+    updateAccessDto: Partial<ToggleEvent & UpdateAccessDto>,
     activeUser: IActiveUser,
   ) {
-    return `This action updates a #${accessId} access`
+    // find first the access user want to update
+    const foundAccess = await this.findOne(accessId, activeUser)
+
+    const roleId = foundAccess.roleId.toString()
+
+    // validate update
+    if (updateAccessDto?.roleId) {
+      const errorMessage = 'Not enough credentials'
+
+      await this.validateRequestAction(activeUser, roleId, errorMessage)
+    }
+
+    const updatedAccess = await foundAccess.updateOne(
+      {
+        _id: accessId,
+        accountOwner: activeUser.sub,
+      },
+      updateAccessDto,
+    )
+
+    return updatedAccess
   }
 
   async remove(accessId: string, activeUser: IActiveUser) {

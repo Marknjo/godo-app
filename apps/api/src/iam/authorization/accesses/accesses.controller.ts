@@ -65,7 +65,11 @@ export class AccessesController {
     @Body() updateAccessDto: ToggleAccessDto,
     @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.accessesService.update(accessesId, updateAccessDto, activeUser)
+    return this.accessesService.update(
+      accessesId,
+      updateAccessDto as Partial<ToggleAccessDto & UpdateAccessDto>,
+      activeUser,
+    )
   }
 
   @Delete(':accessesId')
