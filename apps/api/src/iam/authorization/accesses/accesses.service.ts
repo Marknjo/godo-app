@@ -137,7 +137,25 @@ export class AccessesService {
   }
 
   async remove(accessId: string, activeUser: IActiveUser) {
-    return `This action removes a #${accessId} access`
+    // find first the access user want to delete
+    const foundAccess = await this.findOne(accessId, activeUser)
+
+    const roleId = foundAccess.roleId.toString()
+
+    // ensure user can delete validation
+    const errorMessage = 'Not enough credentials'
+
+    await this.validateRequestAction(activeUser, roleId, errorMessage)
+
+    // delete the access
+    await foundAccess.deleteOne({
+      _id: accessId,
+      accountOwner: activeUser.sub,
+    })
+
+    return {
+      message: 'Access was successfully deleted',
+    }
   }
 
   /**
