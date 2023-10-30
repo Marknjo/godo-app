@@ -17,6 +17,7 @@ import { AccessesService } from './accesses.service'
 import { CreateAccessDto } from './dto/create-access.dto'
 import { UpdateAccessDto } from './dto/update-access.dto'
 import { Access } from './schema/access.schema'
+import { ToggleAccessDto } from './dto/toggle-access.dto'
 
 @Controller({
   path: 'accesses',
@@ -53,6 +54,15 @@ export class AccessesController {
   update(
     @Param('accessesId', PerseMongoIdPipe) accessesId: string,
     @Body() updateAccessDto: UpdateAccessDto,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.accessesService.update(accessesId, updateAccessDto, activeUser)
+  }
+
+  @Patch(':accessesId/toggle')
+  toggleAccess(
+    @Param('accessesId', PerseMongoIdPipe) accessesId: string,
+    @Body() updateAccessDto: ToggleAccessDto,
     @ActiveUser() activeUser: IActiveUser,
   ) {
     return this.accessesService.update(accessesId, updateAccessDto, activeUser)
