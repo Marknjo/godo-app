@@ -1,20 +1,16 @@
 export enum ERoles {
   // REGULARS USERS
-  // - TEAMS
-  TEAM_OWNER = 'team_owner',
-  TEAM_MANAGER = 'team_manager',
-  TEAM_MEMBER = 'team_member',
+  TEAM_USER = 'team_user',
+  PREMIUM_USER = 'premium_user',
+  GUEST_USER = 'guest_user',
+  STANDARD_USER = 'standard_user',
+  FREE_USER = 'free_user',
 
-  // Premium
-  PREMIUM_OWNER = 'premium_owner',
-  PREMIUM_MANAGER = 'premium_manager',
-  PREMIUM_MEMBER = 'premium_member',
+  // TEAMS
+  MANAGER = 'manager',
+  MEMBER = 'member',
 
-  // others
-  GUEST = 'guest',
-  STANDARD = 'standard',
-
-  // ADMINS
+  // ADMIN
   ADMIN = 'admin',
   ADMIN_MANAGER = 'admin_manager',
   ADMIN_ASSISTANT = 'admin_assistant',
