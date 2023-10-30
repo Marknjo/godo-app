@@ -1,4 +1,4 @@
-import { ERoles } from '../enums/e-roles.enum'
+import { EPremiumRoles, ERoles } from '../enums/e-roles.enum'
 
 export interface IActiveUser {
   // Current logged in user
@@ -10,4 +10,11 @@ export interface IActiveUser {
   email: string
 
   memberId: string
+
+  /**
+   * Regardless of who is logged in, the base role MUST always be assigned a value
+   * - for account owners baseRole will be equal to role
+   * - for members baseRole with be equal to accountOwner role
+   */
+  baseRole: EPremiumRoles
 }
