@@ -18,7 +18,10 @@ import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 import { ERoleTypes } from './enums/e-role-types'
 import { PerseRoleTypePipe } from './pipes/perse-role-type.pipe'
 import { ToggleRoleDto } from './dto/toggle-role.dto'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { RoleResponseDto } from './dto/role-response.dto'
 
+@Serialize(RoleResponseDto)
 @Controller({
   path: 'roles',
   version: '1',
