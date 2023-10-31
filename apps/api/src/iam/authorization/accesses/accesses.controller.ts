@@ -18,7 +18,10 @@ import { CreateAccessDto } from './dto/create-access.dto'
 import { UpdateAccessDto } from './dto/update-access.dto'
 import { Access } from './schema/access.schema'
 import { ToggleAccessDto } from './dto/toggle-access.dto'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { AccessResponseDto } from './dto/access-response.dto'
 
+@Serialize(AccessResponseDto)
 @Controller({
   path: 'accesses',
   version: '1',
