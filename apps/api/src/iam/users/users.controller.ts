@@ -13,7 +13,10 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { ActiveUser } from '../authentication/decorators/active-user.decorator'
 import { IActiveUser } from '../interfaces/i-active-user'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { UserResponseDto } from './dto/user-response.dto'
 
+@Serialize(UserResponseDto)
 @Controller({
   path: 'users',
   version: '1',
