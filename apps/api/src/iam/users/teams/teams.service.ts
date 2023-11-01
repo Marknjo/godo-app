@@ -156,7 +156,9 @@ export class TeamsService {
     activeUser: IActiveUser,
     memberId: string,
   ) {
-    return 'disable'
+    return await this.update(teamId, disable, activeUser, {
+      memberId,
+    })
   }
 
   async resign(
