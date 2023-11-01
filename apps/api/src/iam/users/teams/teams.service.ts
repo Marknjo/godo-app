@@ -120,7 +120,34 @@ export class TeamsService {
     activeUser: IActiveUser,
     filters: FilterQuery<Team> = {},
   ) {
-    return 'update'
+    let updatedTeamUser = await this.teamModel.findOneAndUpdate(
+      {
+        accountOwner: activeUser.sub,
+        ...filters,
+      },
+      updateTeamDto,
+      {
+        new: true,
+      },
+    )
+
+    if (!updatedTeamUser) {
+      const whoIs = this.factoryUtils.whoIs(activeUser)
+      this.logger.warn(
+        `User with id ${whoIs} failed to update a team member of id ${teamId} with filters ${JSON.stringify(
+          filters,
+        )}`,
+      )
+
+      throw new BadRequestException(
+        `There was error updating a team member with the provided id`,
+      )
+    }
+
+    // populate
+    updatedTeamUser = await updatedTeamUser.populate(this.populateConfigs())
+
+    return updatedTeamUser
   }
 
   async disable(
