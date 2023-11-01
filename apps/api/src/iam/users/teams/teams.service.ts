@@ -87,7 +87,29 @@ export class TeamsService {
       Pick<Team, 'memberId' | 'isActive' | 'isResigned'>
     > = {},
   ) {
-    return 'find one'
+    let foundTeam = await this.teamModel.findOne({
+      accountOwner: activeUser.sub,
+      _id: teamId,
+      ...filters,
+    })
+
+    if (!foundTeam) {
+      const whoIs = this.factoryUtils.whoIs(activeUser)
+      this.logger.warn(
+        `User with id ${whoIs} failed to fetch a team member of id ${teamId} with filters ${JSON.stringify(
+          filters,
+        )}`,
+      )
+
+      throw new NotFoundException(`Requested team member not found!`)
+    }
+
+    foundTeam = await foundTeam.populate<{
+      accountOwner: TUserDoc
+      memberId: TUserDoc
+    }>(this.populateConfigs())
+
+    return foundTeam
   }
 
   async update(
