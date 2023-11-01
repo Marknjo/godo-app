@@ -167,7 +167,9 @@ export class TeamsService {
     resignDto: MemberResignationDto,
     activeUser: IActiveUser,
   ) {
-    return 'resign'
+    return await this.update(teamId, resignDto, activeUser, {
+      memberId,
+    })
   }
 
   async remove(teamId: string, activeUser: IActiveUser) {
