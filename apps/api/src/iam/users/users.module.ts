@@ -28,8 +28,54 @@ import { Team, TeamSchema } from './schema/team.schema'
         useFactory: (userService: UsersService) => {
           const schema = TeamSchema
 
+          // calculate totalTeamMembers for users & update users
+          schema.statics.calcTotalTeamMembers = async function (
+            accountOwner: string,
+          ) {
+            // aggregation
+            const stats = await this.aggregate([
+              // match
+              {
+                $match: {
+                  accountOwner,
+                  $and: [{ isActive: true, isResigned: false }],
+                },
+              },
+
+              // group
+              {
+                $group: {
+                  _id: '$accountOwner',
+                  totalSum: { $sum: 1 },
+                },
+              },
+            ])
+
+            /// updating users schema
+            if (stats.length > 0) {
+              userService.update(accountOwner, {
+                totalTeamMembers: stats[0].totalSum,
+              })
+            }
+          }
+
+          /// calculate totalTeamMembers after creation of new document
+          schema.post('save', function () {
+            // @ts-expect-error - the method is a custom one
+            this.constructor.calcTotalTeamMembers(this.accountOwner)
+          })
+
+          /// calculate totalTeamMembers after update of document
+          schema.post(/^findOneAnd/, function (doc, next) {
+            doc.constructor.calcTotalTeamMembers(doc.accountOwner)
+
+            return next()
+          })
+
           return schema
         },
+        // imports: [UsersModule],
+        // inject: [UsersService],
       },
     ]),
   ],
