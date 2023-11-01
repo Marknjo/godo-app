@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, SchemaTypes } from 'mongoose'
 import { Role } from '../../roles/schema/role.schema'
 import { User } from 'src/iam/users/schema/user.schema'
-import { EPremiumRoles } from 'src/iam/enums/e-roles.enum'
+import { EPremiumSubscribers } from 'src/iam/enums/e-roles.enum'
 
 @Schema({
   toJSON: { virtuals: true },
@@ -37,9 +37,9 @@ export class Access {
 
   @Prop({
     enum: {
-      value: [...Object.values(EPremiumRoles)],
+      value: [...Object.values(EPremiumSubscribers)],
       message: `Invalid role {VALUE}, expects ${Object.values(
-        EPremiumRoles,
+        EPremiumSubscribers,
       ).join(' or ')}`,
     },
   })

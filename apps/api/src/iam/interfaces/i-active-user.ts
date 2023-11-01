@@ -1,4 +1,4 @@
-import { EPremiumRoles, ERoles } from '../enums/e-roles.enum'
+import { EPremiumSubscribers, ERoles } from '../enums/e-roles.enum'
 
 export interface IActiveUser {
   // Current logged in user
@@ -16,5 +16,5 @@ export interface IActiveUser {
    * - for account owners baseRole will be equal to role
    * - for members baseRole with be equal to accountOwner role
    */
-  baseRole: EPremiumRoles
+  baseRole: EPremiumSubscribers
 }

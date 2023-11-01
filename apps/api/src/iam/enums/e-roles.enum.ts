@@ -16,7 +16,7 @@ export enum ERoles {
   ADMIN_ASSISTANT = 'admin_assistant',
 }
 
-export enum EPremiumRoles {
+export enum EPremiumSubscribers {
   TEAM_OWNER = ERoles.TEAM_USER,
   PREMIUM_OWNER = ERoles.PREMIUM_USER,
   GUEST_USER = ERoles.GUEST_USER,

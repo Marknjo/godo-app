@@ -19,7 +19,7 @@ import { CreateAccessDto } from './dto/create-access.dto'
 import { UpdateAccessDto } from './dto/update-access.dto'
 import { Access } from './schema/access.schema'
 import { RolesService } from '../roles/roles.service'
-import { EPremiumRoles, ERoles } from 'src/iam/enums/e-roles.enum'
+import { EPremiumSubscribers, ERoles } from 'src/iam/enums/e-roles.enum'
 import { ERoleTypes } from '../roles/enums/e-role-types'
 
 @Injectable()
@@ -181,7 +181,7 @@ export class AccessesService {
 
     // find type of a the current  user belongs
     const type =
-      role === ERoles.ADMIN || baseRole === EPremiumRoles.ADMIN
+      role === ERoles.ADMIN || baseRole === EPremiumSubscribers.ADMIN
         ? ERoleTypes.ADMIN
         : ERoleTypes.REGULAR
 
@@ -194,13 +194,16 @@ export class AccessesService {
     // validations
     if (managerId) {
       // handling premium, guest & teams manager
-      if (baseRole !== EPremiumRoles.ADMIN && roleName !== ERoles.MEMBER) {
+      if (
+        baseRole !== EPremiumSubscribers.ADMIN &&
+        roleName !== ERoles.MEMBER
+      ) {
         throw new ForbiddenException(errorMessage)
       }
 
       // admin manager
       if (
-        baseRole === EPremiumRoles.ADMIN &&
+        baseRole === EPremiumSubscribers.ADMIN &&
         (roleName === ERoles.ADMIN ||
           roleName === ERoles.MANAGER ||
           roleName === ERoles.MEMBER ||
@@ -211,10 +214,11 @@ export class AccessesService {
     }
 
     // handle account owners
-    if (role !== ERoles.ADMIN) {
-      if (roleName !== ERoles.MANAGER && roleName !== ERoles.MEMBER) {
-        throw new ForbiddenException(errorMessage)
-      }
+    if (
+      (role !== ERoles.ADMIN && roleName !== ERoles.MANAGER) ||
+      (role !== ERoles.ADMIN && roleName !== ERoles.MEMBER)
+    ) {
+      throw new ForbiddenException(errorMessage)
     }
   }
 }
