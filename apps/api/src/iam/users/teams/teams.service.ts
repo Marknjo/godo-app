@@ -37,7 +37,37 @@ export class TeamsService {
   ) {}
 
   async create(createTeamDto: CreateTeamDto, activeUser: IActiveUser) {
-    return 'create'
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+    const isManager = whoIs === activeUser?.memberId
+    const baseRole = activeUser?.baseRole
+
+    const isGuestOrPremiumAccountOwner =
+      activeUser.baseRole === EPremiumSubscribers.GUEST_USER ||
+      activeUser.baseRole === EPremiumSubscribers.PREMIUM_USER
+
+    if (
+      (isManager && baseRole !== EPremiumSubscribers.TEAM_USER) ||
+      (isManager && baseRole !== EPremiumSubscribers.ADMIN) ||
+      isGuestOrPremiumAccountOwner
+    ) {
+      const limits = {
+        [EPremiumSubscribers.GUEST_USER]: this.MAX_GUEST_TEAM,
+        [EPremiumSubscribers.PREMIUM_USER]: this.MAX_PREMIUM_TEAM,
+      }
+      // we handle limits
+
+      if (limits[baseRole] >= activeUser.totalTeamMembers) {
+        throw new UnprocessableEntityException(
+          `You've hit a max limit of numbers you can add in your team with this account, ${baseRole}. Please upgrade your account if you would like to add more members in your team`,
+        )
+      }
+    }
+
+    let newMember = await this.teamModel.create(createTeamDto)
+
+    newMember = await newMember.populate(this.populateConfigs())
+
+    return newMember
   }
 
   findAll(activeUser: IActiveUser, filters?: FilterQuery<Team>) {
