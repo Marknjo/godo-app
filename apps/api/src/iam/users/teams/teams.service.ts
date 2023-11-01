@@ -173,7 +173,20 @@ export class TeamsService {
   }
 
   async remove(teamId: string, activeUser: IActiveUser) {
-    return 'remove/delete'
+    const deletedMember = await this.teamModel.findOneAndDelete({
+      _id: teamId,
+      accountOwner: activeUser.sub,
+    })
+
+    if (!deletedMember) {
+      throw new BadRequestException(
+        `Request to delete a team member failed, make sure the member you are trying to delete is part of the team`,
+      )
+    }
+
+    return {
+      message: `User was successfully deleted`,
+    }
   }
 
   /**
