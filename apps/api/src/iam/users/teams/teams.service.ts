@@ -6,18 +6,20 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { FilterQuery, Model, PopulateOptions } from 'mongoose'
+
+import { IActiveUser } from 'src/iam/interfaces/i-active-user'
+import { FactoryUtils } from 'src/common/services/factory.utils'
+import { EPremiumSubscribers } from 'src/iam/enums/e-roles.enum'
+
+import { Team } from '../schema/team.schema'
+import { TUserDoc } from '../schema/user.schema'
+
 import { CreateTeamDto } from '../dto/teams/create-team.dto'
 import { UpdateTeamDto } from '../dto/teams/update-team.dto'
-import { FilterQuery, Model, PopulateOptions } from 'mongoose'
-import { Team } from '../schema/team.schema'
-import { UsersService } from '../users.service'
-import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 import { MemberResignationDto } from '../dto/teams/member-resignation.dto'
 import { DisableMemberStatusDto } from '../dto/teams/disable-member-status.dto'
-import { FactoryUtils } from 'src/common/services/factory.utils'
-import { InjectModel } from '@nestjs/mongoose'
-import { EPremiumSubscribers } from 'src/iam/enums/e-roles.enum'
-import { TUserDoc } from '../schema/user.schema'
 
 @Injectable()
 export class TeamsService {
@@ -30,8 +32,6 @@ export class TeamsService {
   constructor(
     @InjectModel(Team.name)
     private readonly teamModel: Model<Team>,
-
-    private readonly userService: UsersService,
 
     private readonly factoryUtils: FactoryUtils,
   ) {}
@@ -71,7 +71,13 @@ export class TeamsService {
   }
 
   findAll(activeUser: IActiveUser, filters?: FilterQuery<Team>) {
-    return 'find all'
+    // @TODO: implement pagination
+    return this.teamModel
+      .find({
+        ...filters,
+        accountOwner: activeUser.sub,
+      })
+      .populate(this.populateConfigs())
   }
 
   async findOne(
