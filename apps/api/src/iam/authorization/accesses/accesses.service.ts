@@ -50,7 +50,7 @@ export class AccessesService {
       createAccessDto['accountOwner'] = activeUser.sub
       createAccessDto['baseRole'] = activeUser.baseRole
 
-      const createdAccess = await this.accessesModel.create(createAccessDto)
+      const createdAccess = await this.createAccessHelper(createAccessDto)
 
       return createdAccess
     } catch (error) {
@@ -163,6 +163,10 @@ export class AccessesService {
    *                     HELPERS
    * --------------------------------------------
    */
+
+  async createAccessHelper(createAccessDto: CreateAccessDto) {
+    return await this.accessesModel.create(createAccessDto)
+  }
 
   /**
    * Ensures that a user trying to create a role has the right to create it
