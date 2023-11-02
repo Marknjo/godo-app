@@ -1,6 +1,25 @@
-import { Controller } from '@nestjs/common'
+import { Body, Controller, Post } from '@nestjs/common'
+import { SignUpDto } from './dtos/sign-up.dto'
+import { SignInDto } from './dtos/sign-in.dto'
+import { AuthService } from './auth.service'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { AuthResponseDto } from './dtos/auth-response.dto'
 
-@Controller('auth')
+@Serialize(AuthResponseDto)
+@Controller({
+  path: 'auth',
+  version: '1',
+})
 export class AuthController {
-  // @TODO: signin & signup & switchAccount & me
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('sign-up')
+  signIn(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto)
+  }
+
+  @Post('sign-in')
+  signUp(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto)
+  }
 }
