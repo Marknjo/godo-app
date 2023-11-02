@@ -43,7 +43,7 @@ export class Access {
       ).join(' or ')}`,
     },
   })
-  baseRole: boolean
+  baseRole: EPremiumSubscribers
 }
 
 export const AccessSchema = SchemaFactory.createForClass(Access)
