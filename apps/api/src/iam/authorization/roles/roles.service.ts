@@ -16,6 +16,7 @@ import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 import { ERoleTypes } from './enums/e-role-types'
 import { FactoryUtils } from 'src/common/services/factory.utils'
 import { ToggleRoleDto } from './dto/toggle-role.dto'
+import { ERoles } from 'src/iam/enums/e-roles.enum'
 
 @Injectable()
 export class RolesService {
@@ -97,16 +98,7 @@ export class RolesService {
       `User with id: ${whoIs} is accessing role with id: ${roleId}`,
     )
 
-    const foundRole = await this.rolesModel.findOne({
-      _id: roleId,
-      $and: [{ type }],
-      ...filters,
-    })
-
-    // validation
-    this.throwIfRoleNotFound(foundRole, roleId, 'finding')
-
-    return foundRole
+    return await this.findOneHelper(roleId, filters, type)
   }
 
   async update(
@@ -182,6 +174,23 @@ export class RolesService {
    *
    * --------------------------------------------------------------
    */
+  async findOneHelper(
+    searchBy?: ERoles | string,
+    filters: FilterQuery<Role> = {},
+    type?: ERoleTypes,
+  ) {
+    const isERole = !!ERoles[searchBy]
+
+    const foundRole = await this.rolesModel.findOne({
+      ...(isERole ? { name: searchBy } : { _id: searchBy, $and: [{ type }] }),
+      ...filters,
+    })
+
+    // validation
+    this.throwIfRoleNotFound(foundRole, searchBy, 'finding')
+    return foundRole
+  }
+
   private throwIfRoleNotFound(role: Role, roleId: string, action: string) {
     if (!role) {
       this.logger.error(`${action} role with ${roleId} failed`)
