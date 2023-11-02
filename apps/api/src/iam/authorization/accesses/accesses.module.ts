@@ -26,5 +26,6 @@ import { Access, AccessSchema } from './schema/access.schema'
   ],
   controllers: [AccessesController],
   providers: [AccessesService, FactoryUtils],
+  exports: [AccessesService],
 })
 export class AccessesModule {}
