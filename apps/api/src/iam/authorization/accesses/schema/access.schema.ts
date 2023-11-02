@@ -36,8 +36,9 @@ export class Access {
   isEnabled: boolean
 
   @Prop({
+    type: String,
     enum: {
-      value: [...Object.values(EPremiumSubscribers)],
+      values: [...Object.values(EPremiumSubscribers)],
       message: `Invalid role {VALUE}, expects ${Object.values(
         EPremiumSubscribers,
       ).join(' or ')}`,
