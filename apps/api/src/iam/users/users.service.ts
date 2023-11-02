@@ -162,6 +162,10 @@ export class UsersService {
    * --------------------------------------------------------------
    */
 
+  async removeHelper(userId: string) {
+    return await this.userModel.deleteOne({ _id: userId })
+  }
+
   /**
    * prevent user from updating other users fields
    * @param activeUser
