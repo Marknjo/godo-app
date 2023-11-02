@@ -7,9 +7,18 @@ import { AuthService } from './authentication/auth/auth.service'
 import { FactoryUtils } from 'src/common/services/factory.utils'
 import { RolesModule } from './authorization/roles/roles.module'
 import { AccessesModule } from './authorization/accesses/accesses.module'
+import { JwtModule } from '@nestjs/jwt'
+import { jwtConfigs } from './authentication/configs/jwt.configs'
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
-  imports: [UsersModule, RolesModule, AccessesModule],
+  imports: [
+    JwtModule.registerAsync(jwtConfigs.asProvider()),
+    ConfigModule.forFeature(jwtConfigs),
+    UsersModule,
+    RolesModule,
+    AccessesModule,
+  ],
   providers: [
     {
       provide: HashingService,
