@@ -11,7 +11,6 @@ import { ERoles } from 'src/iam/enums/e-roles.enum'
 export class Role {
   @Prop({
     index: 'text',
-    unique: true,
   })
   name: ERoles
 
