@@ -13,12 +13,12 @@ import { AuthResponseDto } from './dtos/auth-response.dto'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('sign-up')
+  @Post('signup')
   signIn(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto)
   }
 
-  @Post('sign-in')
+  @Post('signin')
   signUp(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto)
   }
