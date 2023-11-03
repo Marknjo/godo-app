@@ -8,6 +8,7 @@ import {
   Logger,
   LoggerService,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common'
 import { SignUpDto } from './dtos/sign-up.dto'
 import { SignInDto } from './dtos/sign-in.dto'
@@ -21,6 +22,7 @@ import { AccessesService } from 'src/iam/authorization/accesses/accesses.service
 import { RolesService } from 'src/iam/authorization/roles/roles.service'
 import { EPremiumSubscribers } from 'src/iam/enums/e-roles.enum'
 import { FactoryUtils } from 'src/common/services/factory.utils'
+import { HashingService } from '../bcrypt/hashing.service'
 
 @Injectable()
 export class AuthService {
@@ -41,6 +43,8 @@ export class AuthService {
 
     private readonly jwtService: JwtService,
 
+    private readonly hashingService: HashingService,
+
     private readonly factoryUtils: FactoryUtils,
   ) {}
 
@@ -60,8 +64,8 @@ export class AuthService {
       // 4). @TODO: Send an email to user
 
       return {
-        ...newUser,
         accessToken,
+        data: newUser,
       }
     } catch (error) {
       // rollback registering the user
@@ -97,11 +101,46 @@ export class AuthService {
     }
   }
 
-  signIn(signInDto: SignInDto) {
-    // 1). Verify user
+  async signIn(signInDto: SignInDto) {
+    const message = 'Password or email does not match'
+    const { email, password } = signInDto
+    try {
+      // 1). Verify user
+      const foundUser = await this.userService.findOneHelper('custom', {
+        email,
+      })
 
-    // 2). Sign token
-    return 'signing in'
+      // 2). Verify password
+      const passwordMatches = await this.hashingService.compare(
+        password,
+        foundUser.password,
+      )
+
+      if (!passwordMatches) {
+        throw new ForbiddenException()
+      }
+
+      // 3). sign a token - pass
+      const accessToken = await this.signToken(foundUser)
+
+      // 4). set default role of user to be a guest
+      await this.assignDefaultRole(foundUser)
+
+      // 5). @TODO: Send an email to user
+
+      return {
+        accessToken,
+        data: foundUser,
+      }
+    } catch (error) {
+      this.logger.warn(
+        `User with email ${email} could not signin because of invalid credentials`,
+      )
+
+      this.logger.error(error)
+
+      throw new UnauthorizedException(message)
+    }
   }
 
   /**
@@ -125,7 +164,9 @@ export class AuthService {
   }
 
   private async assignDefaultRole(newUser: TUserDoc) {
-    const { id } = await this.rolesService.findOneHelper(this.defaultRole)
+    const role = await this.rolesService.findOneHelper(this.defaultRole)
+
+    const { id } = role
 
     const accessDto = {
       assignedTo: newUser.id,
