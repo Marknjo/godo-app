@@ -84,14 +84,14 @@ export class UsersService {
   ) {
     const isAdmin = activeUser.role.includes('admin')
 
-    const foundUser = await this.userModel.findOne({
-      _id: userId,
-      ...(isAdmin ? {} : { username: activeUser.sub }),
-      ...filters,
-    })
-
-    // validation
-    this.throwIfUserNotFound(foundUser, userId, 'finding')
+    const foundUser = await this.findOneHelper(
+      'id',
+      {
+        ...filters,
+        ...(isAdmin ? {} : { username: activeUser.sub }),
+      },
+      userId,
+    )
 
     return foundUser
   }
@@ -161,6 +161,22 @@ export class UsersService {
    *
    * --------------------------------------------------------------
    */
+
+  async findOneHelper(
+    type: 'custom' | 'id' = 'id',
+    filters: FilterQuery<User> = {},
+    searchBy?: string,
+  ) {
+    const foundUser = await this.userModel.findOne({
+      ...(type === 'custom' ? filters : { _id: searchBy }),
+      ...filters,
+    })
+
+    // validation
+    this.throwIfUserNotFound(foundUser, searchBy, 'finding')
+
+    return foundUser
+  }
 
   async removeHelper(userId: string) {
     return await this.userModel.deleteOne({ _id: userId })
