@@ -23,5 +23,5 @@ export class CreateRoleDto {
 
   @IsOptional()
   @IsMongoId()
-  assignedFor: Role //parent feature
+  assignedFor?: Role //parent feature
 }
