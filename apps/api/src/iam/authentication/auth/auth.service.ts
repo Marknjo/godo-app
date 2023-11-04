@@ -126,11 +126,6 @@ export class AuthService {
       // 3). sign a token - pass
       const accessToken = await this.signToken(foundUser.id)
 
-      // 4). set default role of user to be a guest
-      await this.assignDefaultRole(foundUser)
-
-      // 5). @TODO: Send an email to user
-
       return {
         accessToken,
         data: foundUser,
