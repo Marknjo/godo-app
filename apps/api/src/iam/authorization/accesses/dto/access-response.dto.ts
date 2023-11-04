@@ -1,6 +1,9 @@
 import { Expose, Type } from 'class-transformer'
 import { SlimRoleResponseDto } from '../../roles/dto/role-response.dto'
-import { SlimUserResponseDto } from 'src/iam/users/dto/user-response.dto'
+import {
+  BasicUserInfoResponseDto,
+  SlimUserResponseDto,
+} from 'src/iam/users/dto/user-response.dto'
 import { DefaultResponseDto } from 'src/common/dtos/default-response.dto'
 
 export class SlimAccessResponseDto {
@@ -31,4 +34,14 @@ export class AccessResponseDto extends DefaultResponseDto {
   @Expose()
   @Type(() => SlimUserResponseDto)
   accountOwner?: SlimUserResponseDto
+}
+
+export class AccessFullResponseDto extends DefaultResponseDto {
+  @Expose()
+  @Type(() => BasicUserInfoResponseDto)
+  assignedTo: BasicUserInfoResponseDto
+
+  @Expose()
+  @Type(() => BasicUserInfoResponseDto)
+  accountOwner?: BasicUserInfoResponseDto
 }
