@@ -27,3 +27,8 @@ export class SlimUserResponseDto {
   @Expose()
   email: string
 }
+
+export class BasicUserInfoResponseDto extends SlimUserResponseDto {
+  @Expose()
+  profileImg: string
+}
