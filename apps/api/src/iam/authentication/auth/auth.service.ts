@@ -23,6 +23,7 @@ import { RolesService } from 'src/iam/authorization/roles/roles.service'
 import { EPremiumSubscribers } from 'src/iam/enums/e-roles.enum'
 import { FactoryUtils } from 'src/common/services/factory.utils'
 import { HashingService } from '../bcrypt/hashing.service'
+import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 
 @Injectable()
 export class AuthService {
@@ -56,7 +57,7 @@ export class AuthService {
       newUser = await this.userService.create(signUpDto)
 
       // 2). sign a token - pass
-      const accessToken = await this.signToken(newUser)
+      const accessToken = await this.signToken(newUser.id)
 
       // 3). set default role of user to be a guest
       await this.assignDefaultRole(newUser)
@@ -123,7 +124,7 @@ export class AuthService {
       }
 
       // 3). sign a token - pass
-      const accessToken = await this.signToken(foundUser)
+      const accessToken = await this.signToken(foundUser.id)
 
       // 4). set default role of user to be a guest
       await this.assignDefaultRole(foundUser)
@@ -145,6 +146,10 @@ export class AuthService {
     }
   }
 
+  async switchAccount(accountOwnerId: string, activeUser: IActiveUser) {
+    return 'switchAccount'
+  }
+
   /**
    * ------------------------------
    *
@@ -152,9 +157,15 @@ export class AuthService {
    *
    * -----------------------------
    */
-  private async signToken(newUser: TUserDoc) {
+  private async signToken<P extends Record<string, unknown>>(
+    userId: string,
+    memberId?: string,
+    customPayload?: P,
+  ) {
     const payload = {
-      id: newUser.id,
+      sub: userId,
+      ...(memberId ? { memberId } : {}),
+      ...(customPayload ? customPayload : {}),
     }
 
     return this.jwtService.signAsync(payload, {
