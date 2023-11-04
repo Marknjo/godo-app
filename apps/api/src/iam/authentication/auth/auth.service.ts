@@ -142,7 +142,51 @@ export class AuthService {
   }
 
   async switchAccount(accountOwnerId: string, activeUser: IActiveUser) {
-    return 'switchAccount'
+    const memberId = activeUser?.memberId
+
+    this.logger.log(`User id ${memberId} is switching account`)
+
+    try {
+      if (memberId) {
+        throw new ForbiddenException(
+          `Please switch to an account you are a member of`,
+        )
+      }
+
+      // 1) find the access from access service
+      const foundAccess = await this.accessesService.findOneHelper(true, {
+        assignedTo: memberId,
+        accountOwner: accountOwnerId,
+        $and: [{ isEnabled: true }],
+      })
+
+      // 2) if there is an access, generate a new token, client direct into another
+      // 3) assign token a payload with two items, id accountOwnerId, memberId
+      const accessToken = await this.signToken(accountOwnerId, memberId)
+
+      return {
+        accessToken,
+        data: foundAccess,
+      }
+    } catch (error) {
+      this.logger.warn(
+        `User with id ${memberId} was not able to switch into an account of user with id ${accountOwnerId}`,
+      )
+      this.logger.error(error)
+
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw new UnauthorizedException(
+          `You lack enough credentials to switch into this account`,
+        )
+      }
+
+      throw new InternalServerErrorException(
+        `Failed to switch you to this account, please try again later`,
+      )
+    }
   }
 
   /**
