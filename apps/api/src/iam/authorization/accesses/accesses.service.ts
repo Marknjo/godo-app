@@ -9,7 +9,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { FilterQuery, Model } from 'mongoose'
+import { FilterQuery, Model, PopulateOption, PopulateOptions } from 'mongoose'
 
 import { FactoryUtils } from 'src/common/services/factory.utils'
 import { UsersService } from 'src/iam/users/users.service'
@@ -21,6 +21,7 @@ import { Access } from './schema/access.schema'
 import { RolesService } from '../roles/roles.service'
 import { EPremiumSubscribers, ERoles } from 'src/iam/enums/e-roles.enum'
 import { ERoleTypes } from '../roles/enums/e-role-types'
+import { TAccessResponseDoc } from './types/t-access-response-doc.type'
 
 @Injectable()
 export class AccessesService {
@@ -95,17 +96,16 @@ export class AccessesService {
     activeUser: IActiveUser,
     isEnabled?: boolean,
   ) {
-    const foundRole = await this.accessesModel.findOne({
-      _id: accessId,
-      accountOwner: activeUser.sub,
-      ...(isEnabled ? { isEnabled: true } : {}),
-    })
+    const foundAccess = await this.findOneHelper(
+      false,
+      {
+        accountOwner: activeUser.sub,
+        ...(isEnabled ? { isEnabled: true } : {}),
+      },
+      accessId,
+    )
 
-    if (!foundRole) {
-      throw new NotFoundException(`Access not found`)
-    }
-
-    return foundRole
+    return foundAccess
   }
 
   async update(
@@ -164,8 +164,40 @@ export class AccessesService {
    * --------------------------------------------
    */
 
+  async findOneHelper(
+    isCustomSearchBy: boolean,
+    filters: FilterQuery<Access> = {},
+    searchBy?: string,
+  ) {
+    let foundAccess = await this.accessesModel.findOne({
+      ...(!isCustomSearchBy ? { _id: searchBy } : {}),
+      ...filters,
+    })
+
+    // validation
+    if (!foundAccess) {
+      throw new NotFoundException(`Access not found`)
+    }
+
+    // populate fields
+    const populateOptions = this.populateHelper()
+
+    foundAccess =
+      await foundAccess.populate<TAccessResponseDoc>(populateOptions)
+
+    return foundAccess as TAccessResponseDoc
+  }
+
   async createAccessHelper(createAccessDto: CreateAccessDto) {
     return await this.accessesModel.create(createAccessDto)
+  }
+
+  private populateHelper(): PopulateOptions[] {
+    return [
+      { path: 'accountOwner' },
+      { path: 'assignedTo' },
+      { path: 'roleId', select: 'id name' },
+    ]
   }
 
   /**
