@@ -20,7 +20,7 @@ import { EPremiumSubscribers } from '../enums/e-roles.enum'
 
 @Injectable()
 export class UsersService {
-  private readonly logger: LoggerService = new Logger()
+  private readonly logger: LoggerService = new Logger(UsersService.name)
 
   constructor(
     @InjectModel(User.name)
