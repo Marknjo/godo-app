@@ -82,13 +82,12 @@ export class UsersService {
     activeUser: IActiveUser,
     filters?: FilterQuery<User>,
   ) {
-    const isAdmin = activeUser.role.includes('admin')
+    this.throwIfAccessingOtherUsers(activeUser, userId, 'Finding this user')
 
     const foundUser = await this.findOneHelper(
       'id',
       {
         ...filters,
-        ...(isAdmin ? {} : { username: activeUser.sub }),
       },
       userId,
     )
@@ -108,7 +107,7 @@ export class UsersService {
     filters?: FilterQuery<User>,
   ) {
     // prevent user from updating other users fields
-    this.throwIfUpdatingOtherUsers(activeUser, userId)
+    this.throwIfAccessingOtherUsers(activeUser, userId, 'Updating')
 
     // handle updating
     const updatedUser = await this.userModel.findOneAndUpdate(
@@ -187,13 +186,17 @@ export class UsersService {
    * @param activeUser
    * @param userId
    */
-  private throwIfUpdatingOtherUsers(activeUser: IActiveUser, userId: string) {
+  private throwIfAccessingOtherUsers(
+    activeUser: IActiveUser,
+    userId: string,
+    action: string,
+  ) {
     if (
       activeUser &&
       activeUser.sub !== userId &&
       activeUser.baseRole !== EPremiumSubscribers.ADMIN
     ) {
-      throw new ForbiddenException(`Update not allow`)
+      throw new ForbiddenException(`${action} not allow`)
     }
   }
 
