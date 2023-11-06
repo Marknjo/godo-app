@@ -20,8 +20,23 @@ import { Access } from './schema/access.schema'
 import { ToggleAccessDto } from './dto/toggle-access.dto'
 import { Serialize } from 'src/common/decorators/serialize.decorator'
 import { AccessResponseDto } from './dto/access-response.dto'
+import { Auth } from 'src/iam/authentication/decorators/auth.decorator'
+import { EAuthTypes } from 'src/iam/authentication/enums/e-auth-types.enum'
+import { AccessAuth } from '../decorators/access-auth.decorator'
+import { EAccessAuthTypes } from '../enums/e-access-auth-types.enum'
+import { RestrictToRole } from '../decorators/restrict-to-role.decorator'
+import {
+  EMembers,
+  EPremiumSubscribers,
+  eAllMembersMap,
+  eManagerMembersMap,
+  ePremiumSubscribers,
+} from 'src/iam/enums/e-roles.enum'
 
 @Serialize(AccessResponseDto)
+@RestrictToRole(...ePremiumSubscribers, ...eManagerMembersMap)
+@AccessAuth(EAccessAuthTypes.ROLE)
+@Auth(EAuthTypes.BEARER)
 @Controller({
   path: 'accesses',
   version: '1',
@@ -37,6 +52,10 @@ export class AccessesController {
     return this.accessesService.create(createAccessDto, activeUser)
   }
 
+  @RestrictToRole(...ePremiumSubscribers, ...eManagerMembersMap, [
+    EMembers.ADMIN_ASSISTANT,
+    EPremiumSubscribers.ADMIN,
+  ])
   @Get()
   findAll(
     @ActiveUser() activeUser: IActiveUser,
@@ -45,6 +64,11 @@ export class AccessesController {
     return this.accessesService.findAll(activeUser, filters)
   }
 
+  @RestrictToRole(
+    ...ePremiumSubscribers,
+    ...eManagerMembersMap,
+    ...eAllMembersMap,
+  )
   @Get(':accessesId')
   findOne(
     @Param('accessesId', PerseMongoIdPipe) accessesId: string,
