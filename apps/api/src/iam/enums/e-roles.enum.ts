@@ -1,4 +1,7 @@
-import { TRestrictToRoleMemberOnlyTuple } from '../authorization/decorators/restrict-to-role.decorator'
+import {
+  TRestrictToRole,
+  TRestrictToRoleMemberOnlyTuple,
+} from '../authorization/decorators/restrict-to-role.decorator'
 
 export enum ERoles {
   // REGULARS USERS
@@ -19,6 +22,16 @@ export enum ERoles {
 
   // WHITELISTING - handlers
   WHITELISTED = 'whitelisted',
+}
+
+export enum EGeneralUsers {
+  TEAM_USER = ERoles.TEAM_USER,
+  PREMIUM_USER = ERoles.PREMIUM_USER,
+  GUEST_USER = ERoles.GUEST_USER,
+  ADMIN = ERoles.ADMIN,
+  WHITELISTED = ERoles.WHITELISTED,
+  STANDARD_USER = ERoles.STANDARD_USER,
+  FREE_USER = ERoles.FREE_USER,
 }
 
 export enum EPremiumSubscribers {
@@ -45,6 +58,9 @@ export enum EMembers {
 }
 
 export const ePremiumSubscribers = Object.values(EPremiumSubscribers)
+export const eGeneralUsers = Object.values(
+  EGeneralUsers,
+) as unknown as TRestrictToRole[]
 
 export const eAllMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
   [EMembers.ADMIN_MANAGER, EPremiumSubscribers.ADMIN],
