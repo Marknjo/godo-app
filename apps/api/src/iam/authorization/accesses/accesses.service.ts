@@ -96,11 +96,15 @@ export class AccessesService {
     activeUser: IActiveUser,
     isEnabled?: boolean,
   ) {
+    // users can only fetch their own access - not others, especially if not admin or manager
+    const assignedTo = activeUser?.memberId
+
     const foundAccess = await this.findOneHelper(
       false,
       {
         accountOwner: activeUser.sub,
         ...(isEnabled ? { isEnabled: true } : {}),
+        ...(assignedTo ? { assignedTo } : {}),
       },
       accessId,
     )
