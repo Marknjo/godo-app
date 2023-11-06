@@ -9,7 +9,7 @@ export interface IActiveUser {
 
   email: string
 
-  memberId: string
+  memberId?: string
 
   /**
    * Regardless of who is logged in, the base role MUST always be assigned a value
