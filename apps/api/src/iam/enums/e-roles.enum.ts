@@ -1,3 +1,5 @@
+import { TRestrictToRoleMemberOnlyTuple } from '../authorization/decorators/restrict-to-role.decorator'
+
 export enum ERoles {
   // REGULARS USERS
   TEAM_USER = 'team_user',
@@ -27,9 +29,17 @@ export enum EPremiumSubscribers {
   WHITELISTED = ERoles.WHITELISTED,
 }
 
+/**
+ * Ensures EMembers is unique across all subscribers
+ * the value is constructed as -> MemberRole#SubscriberRole
+ */
 export enum EMembers {
-  ADMIN_MANAGER = ERoles.MEMBER,
-  ADMIN_ASSISTANT = ERoles.ADMIN_ASSISTANT,
-  MANAGER = ERoles.MANAGER,
-  MEMBER = ERoles.MEMBER,
+  ADMIN_MANAGER = `${ERoles.ADMIN_MANAGER}#${ERoles.ADMIN}`,
+  ADMIN_ASSISTANT = `${ERoles.ADMIN_ASSISTANT}#${ERoles.ADMIN}`,
+  PREMIUM_MANAGER = `${ERoles.MANAGER}#${ERoles.PREMIUM_USER}`,
+  PREMIUM_MEMBER = `${ERoles.MEMBER}#${ERoles.PREMIUM_USER}`,
+  GUEST_MANAGER = `${ERoles.MANAGER}#${ERoles.GUEST_USER}`,
+  GUEST_MEMBER = `${ERoles.MEMBER}#${ERoles.GUEST_USER}`,
+  TEAM_MANAGER = `${ERoles.MANAGER}#${ERoles.TEAM_USER}`,
+  TEAM_MEMBER = `${ERoles.MEMBER}#${ERoles.TEAM_USER}`,
 }
