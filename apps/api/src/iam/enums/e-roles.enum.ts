@@ -14,6 +14,9 @@ export enum ERoles {
   ADMIN = 'admin',
   ADMIN_MANAGER = 'admin_manager',
   ADMIN_ASSISTANT = 'admin_assistant',
+
+  // WHITELISTING - handlers
+  WHITELISTED = 'whitelisted',
 }
 
 export enum EPremiumSubscribers {
@@ -21,4 +24,12 @@ export enum EPremiumSubscribers {
   PREMIUM_USER = ERoles.PREMIUM_USER,
   GUEST_USER = ERoles.GUEST_USER,
   ADMIN = ERoles.ADMIN,
+  WHITELISTED = ERoles.WHITELISTED,
+}
+
+export enum EMembers {
+  ADMIN_MANAGER = ERoles.MEMBER,
+  ADMIN_ASSISTANT = ERoles.ADMIN_ASSISTANT,
+  MANAGER = ERoles.MANAGER,
+  MEMBER = ERoles.MEMBER,
 }
