@@ -6,8 +6,28 @@ import { TRolesDoc } from '../../roles/schema/role.schema'
 export type TAccessResponseDoc = MergeType<
   TAccessDoc,
   {
-    accountOwner: TUserDoc
-    assignedTo: TUserDoc
+    accountOwner: MergeType<
+      TUserDoc,
+      {
+        accesses: MergeType<
+          TAccessDoc,
+          {
+            roleId: TRolesDoc
+          }
+        >
+      }
+    >
+    assignedTo: MergeType<
+      TUserDoc,
+      {
+        accesses: MergeType<
+          TAccessDoc,
+          {
+            roleId: TRolesDoc
+          }
+        >
+      }
+    >
     roleId: TRolesDoc
   }
 >
