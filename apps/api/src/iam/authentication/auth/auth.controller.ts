@@ -13,7 +13,7 @@ import { EAuthTypes } from '../enums/e-auth-types.enum'
 import { AccessAuth } from 'src/iam/authorization/decorators/access-auth.decorator'
 import { EAccessAuthTypes } from 'src/iam/authorization/enums/e-access-auth-types.enum'
 import { RestrictToRole } from 'src/iam/authorization/decorators/restrict-to-role.decorator'
-import { eMembersMap, ePremiumSubscribers } from 'src/iam/enums/e-roles.enum'
+import { eAllMembersMap, ePremiumSubscribers } from 'src/iam/enums/e-roles.enum'
 
 @Serialize(AuthResponseDto)
 @Controller({
@@ -38,7 +38,7 @@ export class AuthController {
   @Serialize(SwitchedAccountDto)
   @Auth(EAuthTypes.BEARER)
   @AccessAuth(EAccessAuthTypes.ROLE)
-  @RestrictToRole(...ePremiumSubscribers, ...eMembersMap)
+  @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
   @Get('switch-account/:account-owner-id')
   switchAccount(
     @Param('account-owner-id', PerseMongoIdPipe) accountOwnerId: string,

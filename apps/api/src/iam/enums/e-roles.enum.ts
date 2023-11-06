@@ -46,7 +46,7 @@ export enum EMembers {
 
 export const ePremiumSubscribers = Object.values(EPremiumSubscribers)
 
-export const eMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
+export const eAllMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
   [EMembers.ADMIN_MANAGER, EPremiumSubscribers.ADMIN],
   [EMembers.ADMIN_ASSISTANT, EPremiumSubscribers.ADMIN],
   [EMembers.PREMIUM_MANAGER, EPremiumSubscribers.PREMIUM_USER],
