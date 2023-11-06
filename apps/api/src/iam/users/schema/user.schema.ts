@@ -76,8 +76,17 @@ export const UserSchema = SchemaFactory.createForClass(User)
 export type TUserDoc = mongoose.HydratedDocument<User>
 
 // populate virtual fields
+// Accesses
 UserSchema.virtual('accesses', {
   ref: 'Access',
+  localField: '_id',
+  foreignField: 'accountOwner',
+})
+
+// populate virtual fields
+// Members
+UserSchema.virtual('team', {
+  ref: 'Team',
   localField: '_id',
   foreignField: 'accountOwner',
 })
