@@ -56,3 +56,22 @@ export const eAllMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
   [EMembers.GUEST_MANAGER, EPremiumSubscribers.GUEST_USER],
   [EMembers.GUEST_MEMBER, EPremiumSubscribers.GUEST_USER],
 ]
+
+export const eManagerMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
+  [EMembers.ADMIN_MANAGER, EPremiumSubscribers.ADMIN],
+  [EMembers.PREMIUM_MANAGER, EPremiumSubscribers.PREMIUM_USER],
+  [EMembers.TEAM_MANAGER, EPremiumSubscribers.TEAM_USER],
+  [EMembers.GUEST_MANAGER, EPremiumSubscribers.GUEST_USER],
+]
+
+export const eSubscribersMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
+  [EMembers.ADMIN_ASSISTANT, EPremiumSubscribers.ADMIN],
+  [EMembers.PREMIUM_MEMBER, EPremiumSubscribers.PREMIUM_USER],
+  [EMembers.TEAM_MEMBER, EPremiumSubscribers.TEAM_USER],
+  [EMembers.GUEST_MEMBER, EPremiumSubscribers.GUEST_USER],
+]
+
+export const eAdminMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
+  [EMembers.ADMIN_MANAGER, EPremiumSubscribers.ADMIN],
+  [EMembers.ADMIN_ASSISTANT, EPremiumSubscribers.ADMIN],
+]
