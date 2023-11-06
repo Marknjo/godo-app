@@ -43,3 +43,16 @@ export enum EMembers {
   TEAM_MANAGER = `${ERoles.MANAGER}#${ERoles.TEAM_USER}`,
   TEAM_MEMBER = `${ERoles.MEMBER}#${ERoles.TEAM_USER}`,
 }
+
+export const ePremiumSubscribers = Object.values(EPremiumSubscribers)
+
+export const eMembersMap: Array<TRestrictToRoleMemberOnlyTuple> = [
+  [EMembers.ADMIN_MANAGER, EPremiumSubscribers.ADMIN],
+  [EMembers.ADMIN_ASSISTANT, EPremiumSubscribers.ADMIN],
+  [EMembers.PREMIUM_MANAGER, EPremiumSubscribers.PREMIUM_USER],
+  [EMembers.PREMIUM_MEMBER, EPremiumSubscribers.PREMIUM_USER],
+  [EMembers.TEAM_MANAGER, EPremiumSubscribers.TEAM_USER],
+  [EMembers.TEAM_MEMBER, EPremiumSubscribers.TEAM_USER],
+  [EMembers.GUEST_MANAGER, EPremiumSubscribers.GUEST_USER],
+  [EMembers.GUEST_MEMBER, EPremiumSubscribers.GUEST_USER],
+]
