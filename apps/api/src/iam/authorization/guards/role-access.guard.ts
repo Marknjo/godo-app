@@ -136,7 +136,7 @@ export class RoleAccessGuard implements CanActivate {
     memberAccesses: TRestrictedToRoleMembersOnly,
     activeUser: IActiveUser,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const role = activeUser.role as unknown as EMembers
+    const role = `${activeUser.role}#${activeUser.baseRole}` as EMembers
     return memberAccesses.get(role) === activeUser.baseRole
   }
 
