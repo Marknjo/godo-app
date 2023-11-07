@@ -64,11 +64,7 @@ export class AccessesController {
     return this.accessesService.findAll(activeUser, filters)
   }
 
-  @RestrictToRole(
-    ...ePremiumSubscribers,
-    ...eManagerMembersMap,
-    ...eAllMembersMap,
-  )
+  @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
   @Get(':accessesId')
   findOne(
     @Param('accessesId', PerseMongoIdPipe) accessesId: string,
