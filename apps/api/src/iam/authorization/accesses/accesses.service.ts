@@ -84,10 +84,11 @@ export class AccessesService {
   }
 
   async findAll(activeUser: IActiveUser, filters?: FilterQuery<Access>) {
+    const isAdmin = !!EPremiumSubscribers[activeUser.baseRole.toUpperCase()]
     // @TODO: implement pagination
     return this.accessesModel.find({
       ...filters,
-      accountOwner: activeUser.sub,
+      ...(isAdmin ? {} : { accountOwner: activeUser.sub }),
     })
   }
 
@@ -98,13 +99,14 @@ export class AccessesService {
   ) {
     // users can only fetch their own access - not others, especially if not admin or manager
     const assignedTo = activeUser?.memberId
+    const isAdmin = !!EPremiumSubscribers[activeUser.baseRole.toUpperCase()]
 
     const foundAccess = await this.findOneHelper(
       false,
       {
         accountOwner: activeUser.sub,
         ...(isEnabled ? { isEnabled: true } : {}),
-        ...(assignedTo ? { assignedTo } : {}),
+        ...(assignedTo && !isAdmin ? { assignedTo } : {}),
       },
       accessId,
     )
