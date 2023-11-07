@@ -63,6 +63,13 @@ export class UsersController {
   }
 
   @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
+  @Get('profile/me')
+  profile(@ActiveUser() activeUser: IActiveUser) {
+    const userId = activeUser.sub
+    return this.usersService.findOne(userId, activeUser)
+  }
+
+  @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
   @Patch(':userId')
   update(
     @Param('userId') userId: string,
