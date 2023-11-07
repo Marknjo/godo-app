@@ -191,10 +191,11 @@ export class UsersService {
     userId: string,
     action: string,
   ) {
+    const isAdmin = !!EPremiumSubscribers[activeUser.baseRole.toUpperCase()]
+
     if (
-      activeUser &&
-      activeUser.sub !== userId &&
-      activeUser.baseRole !== EPremiumSubscribers.ADMIN
+      (activeUser.sub !== userId && !isAdmin) ||
+      (userId !== activeUser.baseRole && !isAdmin)
     ) {
       throw new ForbiddenException(`${action} not allow`)
     }
