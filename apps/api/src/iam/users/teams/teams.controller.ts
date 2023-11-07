@@ -87,7 +87,7 @@ export class TeamsController {
     return this.teamsService.disable(teamId, disable, activeUser, memberId)
   }
 
-  @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
+  @RestrictToRole(...eAllMembersMap)
   @Patch(':teamId/resign/:memberId')
   resign(
     @Param('teamId', PerseMongoIdPipe) teamId: string,
