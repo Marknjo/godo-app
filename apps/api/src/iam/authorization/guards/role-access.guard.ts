@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
-import { Observable } from 'rxjs'
 import { ACTIVE_USER_KEY } from 'src/iam/authentication/constants/active-user.constant'
 import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 import {
@@ -20,9 +19,7 @@ import {
 export class RoleAccessGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<Request>()
 
     const activeUser = req[ACTIVE_USER_KEY] as IActiveUser
@@ -63,40 +60,7 @@ export class RoleAccessGuard implements CanActivate {
 
     const members = filterResults as TRestrictedToRoleMembersOnly
 
-    // admin managers
-    if (
-      activeUser.baseRole === EPremiumSubscribers.ADMIN &&
-      activeUser.role === ERoles.ADMIN_MANAGER
-    ) {
-      return this.isRestricted(members, activeUser)
-    }
-
-    // admin assistant
-    if (
-      activeUser.baseRole === EPremiumSubscribers.ADMIN &&
-      activeUser.role === ERoles.ADMIN_ASSISTANT
-    ) {
-      return this.isRestricted(members, activeUser)
-    }
-
-    // managers
-    if (
-      EPremiumSubscribers[activeUser.baseRole.toUpperCase()] &&
-      activeUser.role === ERoles.MANAGER
-    ) {
-      return this.isRestricted(members, activeUser)
-    }
-
-    // members
-    if (
-      EPremiumSubscribers[activeUser.baseRole.toUpperCase()] &&
-      activeUser.role === ERoles.MEMBER
-    ) {
-      return this.isRestricted(members, activeUser)
-    }
-
-    // we don't know the user
-    return false
+    return this.canMemberAccess(members, activeUser)
   }
 
   /**
@@ -132,11 +96,12 @@ export class RoleAccessGuard implements CanActivate {
    * @param activeUser
    * @returns
    */
-  private isRestricted(
+  private canMemberAccess(
     memberAccesses: TRestrictedToRoleMembersOnly,
     activeUser: IActiveUser,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  ): boolean {
     const role = `${activeUser.role}#${activeUser.baseRole}` as EMembers
+
     return memberAccesses.get(role) === activeUser.baseRole
   }
 
