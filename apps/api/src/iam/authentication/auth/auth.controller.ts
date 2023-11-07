@@ -36,9 +36,9 @@ export class AuthController {
   // TODO: Implement authGuard
 
   @Serialize(SwitchedAccountDto)
-  @Auth(EAuthTypes.BEARER)
-  @AccessAuth(EAccessAuthTypes.ROLE)
   @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
+  @AccessAuth(EAccessAuthTypes.ROLE)
+  @Auth(EAuthTypes.BEARER)
   @Get('switch-account/:account-owner-id')
   switchAccount(
     @Param('account-owner-id', PerseMongoIdPipe) accountOwnerId: string,
