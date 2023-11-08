@@ -11,6 +11,7 @@ import { CategoriesService } from './categories.service'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
 import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
+import { ToggleCategoryStatusDto } from './dto/toggle-category-status.dto'
 
 @Controller('categories')
 export class CategoriesController {
@@ -37,6 +38,14 @@ export class CategoriesController {
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     return this.categoriesService.update(categoryId, updateCategoryDto)
+  }
+
+  @Patch(':categoryId')
+  toggleStatus(
+    @Param('categoryId', PerseMongoIdPipe) categoryId: string,
+    @Body() toggleStatusDto: ToggleCategoryStatusDto,
+  ) {
+    return this.categoriesService.toggleStatus(categoryId, toggleStatusDto)
   }
 
   @Delete(':categoryId')

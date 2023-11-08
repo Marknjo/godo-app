@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
+import { ToggleCategoryStatusDto } from './dto/toggle-category-status.dto'
 
 @Injectable()
 export class CategoriesService {
@@ -16,8 +17,15 @@ export class CategoriesService {
     return `This action returns a #${categoryId} category`
   }
 
-  update(categoryId: string, updateCategoryDto: UpdateCategoryDto) {
+  update(
+    categoryId: string,
+    updateCategoryDto: Partial<UpdateCategoryDto | ToggleCategoryStatusDto>,
+  ) {
     return `This action updates a #${categoryId} category`
+  }
+
+  toggleStatus(categoryId: string, toggleStatusDto: ToggleCategoryStatusDto) {
+    return `toggleStatus`
   }
 
   remove(categoryId: string) {
