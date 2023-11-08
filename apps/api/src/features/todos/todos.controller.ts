@@ -25,6 +25,7 @@ import {
   ePremiumSubscribers,
 } from 'src/iam/enums/e-roles.enum'
 import { CreateFreeTodoDto } from './dto/create-free-todo.dto'
+import { FreeTodoResponseDto } from './dto/free-todo-response.dto'
 
 @Serialize(TodoResponseDto)
 @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
@@ -37,6 +38,7 @@ import { CreateFreeTodoDto } from './dto/create-free-todo.dto'
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
+  @Serialize(FreeTodoResponseDto)
   @RestrictToRole()
   @Post()
   createFree(@Body() createTodoDto: CreateFreeTodoDto) {
@@ -59,6 +61,7 @@ export class TodosController {
     return this.todosService.findOne(todoId)
   }
 
+  @Serialize(FreeTodoResponseDto)
   @Patch(':todoId')
   updateFree(
     @Param('todoId', PerseMongoIdPipe) todoId: string,
