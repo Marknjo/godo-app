@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger, LoggerService } from '@nestjs/common'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
 import { ToggleCategoryStatusDto } from './dto/toggle-category-status.dto'
 
 @Injectable()
 export class CategoriesService {
+  private readonly logger: LoggerService = new Logger(CategoriesService.name)
+
   create(createCategoryDto: CreateCategoryDto) {
     return 'This action adds a new category'
   }

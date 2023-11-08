@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger, LoggerService } from '@nestjs/common'
 import { CreateIconDto } from './dto/create-icon.dto'
 import { UpdateIconDto } from './dto/update-icon.dto'
 import { ToggleIconsStatusDto } from './dto/toggle-icons-status.dto'
 
 @Injectable()
 export class IconsService {
+  private readonly logger: LoggerService = new Logger(IconsService.name)
+
   create(createIconDto: CreateIconDto) {
     return 'This action adds a new icon'
   }

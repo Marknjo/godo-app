@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger, LoggerService } from '@nestjs/common'
 import { CreateSubTodoDto } from './dto/create-sub-todo.dto'
 import { UpdateSubTodoDto } from './dto/update-sub-todo.dto'
 
 @Injectable()
 export class SubTodosService {
+  private readonly logger: LoggerService = new Logger(SubTodosService.name)
+
   create(createSubTodoDto: CreateSubTodoDto) {
     return 'This action adds a new subTodo'
   }
