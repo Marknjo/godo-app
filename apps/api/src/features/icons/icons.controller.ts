@@ -12,8 +12,14 @@ import { CreateIconDto } from './dto/create-icon.dto'
 import { UpdateIconDto } from './dto/update-icon.dto'
 import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 import { ToggleIconsStatusDto } from './dto/toggle-icons-status.dto'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { IconResponseDto } from './dto/icon-response.dto'
 
-@Controller('icons')
+@Serialize(IconResponseDto)
+@Controller({
+  path: 'icons',
+  version: '1',
+})
 export class IconsController {
   constructor(private readonly iconsService: IconsService) {}
 
