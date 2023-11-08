@@ -17,6 +17,7 @@ import { JwtModule } from '@nestjs/jwt'
 import { jwtConfigs } from './iam/authentication/configs/jwt.configs'
 import { AccessGuard } from './iam/authorization/guards/access.guard'
 import { RoleAccessGuard } from './iam/authorization/guards/role-access.guard'
+import { FeaturesModule } from './features/features.module'
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { RoleAccessGuard } from './iam/authorization/guards/role-access.guard'
     IamModule,
     AccessesModule,
     JwtModule.registerAsync(jwtConfigs.asProvider()),
+    FeaturesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,7 +1,7 @@
-import { AccessGuard } from './access.guard';
+import { AccessGuard } from './access.guard'
 
 describe('AccessGuard', () => {
   it('should be defined', () => {
-    expect(new AccessGuard()).toBeDefined();
-  });
-});
+    expect(new AccessGuard()).toBeDefined()
+  })
+})
