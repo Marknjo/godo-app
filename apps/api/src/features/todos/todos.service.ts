@@ -1,10 +1,20 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger, LoggerService } from '@nestjs/common'
 import { CreateTodoDto } from './dto/create-todo.dto'
 import { UpdateTodoDto } from './dto/update-todo.dto'
 import { ToggleTodoStatusDto } from './dto/toggle-todo-status.dto'
+import { FreeUpdateTodoDto } from './dto/free-update-todo.dto'
+import { CreateFreeTodoDto } from './dto/create-free-todo.dto'
 
 @Injectable()
 export class TodosService {
+  private readonly logger: LoggerService = new Logger(TodosService.name)
+
+  private readonly MAX_STANDARD_SUBSCRIBER_PROJECTS = 24
+
+  createFree(createTodoDto: CreateFreeTodoDto) {
+    return 'This action adds a new todo'
+  }
+
   create(createTodoDto: CreateTodoDto) {
     return 'This action adds a new todo'
   }
@@ -20,6 +30,13 @@ export class TodosService {
   update(
     todoId: string,
     updateTodoDto: Partial<UpdateTodoDto | ToggleTodoStatusDto>,
+  ) {
+    return `This action updates a #${todoId} todo`
+  }
+
+  updateFree(
+    todoId: string,
+    updateTodoDto: Partial<FreeUpdateTodoDto | ToggleTodoStatusDto>,
   ) {
     return `This action updates a #${todoId} todo`
   }

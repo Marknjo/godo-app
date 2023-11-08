@@ -19,7 +19,12 @@ import { EAccessAuthTypes } from 'src/iam/authorization/enums/e-access-auth-type
 import { Auth } from 'src/iam/authentication/decorators/auth.decorator'
 import { EAuthTypes } from 'src/iam/authentication/enums/e-auth-types.enum'
 import { RestrictToRole } from 'src/iam/authorization/decorators/restrict-to-role.decorator'
-import { eAllMembersMap, eGeneralUsers } from 'src/iam/enums/e-roles.enum'
+import {
+  eAllMembersMap,
+  eGeneralUsers,
+  ePremiumSubscribers,
+} from 'src/iam/enums/e-roles.enum'
+import { CreateFreeTodoDto } from './dto/create-free-todo.dto'
 
 @Serialize(TodoResponseDto)
 @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
@@ -32,7 +37,14 @@ import { eAllMembersMap, eGeneralUsers } from 'src/iam/enums/e-roles.enum'
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
+  @RestrictToRole()
   @Post()
+  createFree(@Body() createTodoDto: CreateFreeTodoDto) {
+    return this.todosService.createFree(createTodoDto)
+  }
+
+  @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
+  @Post('/premium')
   create(@Body() createTodoDto: CreateTodoDto) {
     return this.todosService.create(createTodoDto)
   }
@@ -48,6 +60,15 @@ export class TodosController {
   }
 
   @Patch(':todoId')
+  updateFree(
+    @Param('todoId', PerseMongoIdPipe) todoId: string,
+    @Body() updateTodoDto: UpdateTodoDto,
+  ) {
+    return this.todosService.updateFree(todoId, updateTodoDto)
+  }
+
+  @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
+  @Patch(':todoId')
   update(
     @Param('todoId', PerseMongoIdPipe) todoId: string,
     @Body() updateTodoDto: UpdateTodoDto,
@@ -55,6 +76,7 @@ export class TodosController {
     return this.todosService.update(todoId, updateTodoDto)
   }
 
+  @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
   @Patch(':todoId')
   toggleStatus(
     @Param('todoId', PerseMongoIdPipe) categoryId: string,
