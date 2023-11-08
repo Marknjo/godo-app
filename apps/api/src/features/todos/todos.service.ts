@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTodoDto } from './dto/create-todo.dto'
 import { UpdateTodoDto } from './dto/update-todo.dto'
+import { ToggleTodoStatusDto } from './dto/toggle-todo-status.dto'
 
 @Injectable()
 export class TodosService {
@@ -16,8 +17,15 @@ export class TodosService {
     return `This action returns a #${todoId} todo`
   }
 
-  update(todoId: string, updateTodoDto: UpdateTodoDto) {
+  update(
+    todoId: string,
+    updateTodoDto: Partial<UpdateTodoDto | ToggleTodoStatusDto>,
+  ) {
     return `This action updates a #${todoId} todo`
+  }
+
+  toggleStatus(todoId: string, toggleStatusDto: ToggleTodoStatusDto) {
+    return `toggleStatus`
   }
 
   remove(todoId: string) {

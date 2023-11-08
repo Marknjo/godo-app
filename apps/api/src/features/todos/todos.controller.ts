@@ -10,6 +10,8 @@ import {
 import { TodosService } from './todos.service'
 import { CreateTodoDto } from './dto/create-todo.dto'
 import { UpdateTodoDto } from './dto/update-todo.dto'
+import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
+import { ToggleTodoStatusDto } from './dto/toggle-todo-status.dto'
 
 @Controller('todos')
 export class TodosController {
@@ -26,20 +28,28 @@ export class TodosController {
   }
 
   @Get(':todoId')
-  findOne(@Param('todoId') todoId: string) {
+  findOne(@Param('todoId', PerseMongoIdPipe) todoId: string) {
     return this.todosService.findOne(todoId)
   }
 
   @Patch(':todoId')
   update(
-    @Param('todoId') todoId: string,
+    @Param('todoId', PerseMongoIdPipe) todoId: string,
     @Body() updateTodoDto: UpdateTodoDto,
   ) {
     return this.todosService.update(todoId, updateTodoDto)
   }
 
+  @Patch(':todoId')
+  toggleStatus(
+    @Param('todoId', PerseMongoIdPipe) categoryId: string,
+    @Body() toggleStatusDto: ToggleTodoStatusDto,
+  ) {
+    return this.todosService.toggleStatus(categoryId, toggleStatusDto)
+  }
+
   @Delete(':todoId')
-  remove(@Param('todoId') todoId: string) {
+  remove(@Param('todoId', PerseMongoIdPipe) todoId: string) {
     return this.todosService.remove(todoId)
   }
 }
