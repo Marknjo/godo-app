@@ -12,8 +12,14 @@ import { CreateTodoDto } from './dto/create-todo.dto'
 import { UpdateTodoDto } from './dto/update-todo.dto'
 import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 import { ToggleTodoStatusDto } from './dto/toggle-todo-status.dto'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { TodoResponseDto } from './dto/todo-response.dto'
 
-@Controller('todos')
+@Serialize(TodoResponseDto)
+@Controller({
+  path: 'todos',
+  version: '1',
+})
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
