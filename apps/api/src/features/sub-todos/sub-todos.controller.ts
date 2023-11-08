@@ -11,8 +11,14 @@ import { SubTodosService } from './sub-todos.service'
 import { CreateSubTodoDto } from './dto/create-sub-todo.dto'
 import { UpdateSubTodoDto } from './dto/update-sub-todo.dto'
 import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { SubTodoResponseDto } from './dto/sub-todo-response.dto'
 
-@Controller('sub-todos')
+@Serialize(SubTodoResponseDto)
+@Controller({
+  path: 'sub-todos',
+  version: '1',
+})
 export class SubTodosController {
   constructor(private readonly subTodosService: SubTodosService) {}
 
