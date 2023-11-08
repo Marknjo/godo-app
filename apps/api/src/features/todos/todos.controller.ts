@@ -25,18 +25,21 @@ export class TodosController {
     return this.todosService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todosService.findOne(+id)
+  @Get(':todoId')
+  findOne(@Param('todoId') todoId: string) {
+    return this.todosService.findOne(todoId)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todosService.update(+id, updateTodoDto)
+  @Patch(':todoId')
+  update(
+    @Param('todoId') todoId: string,
+    @Body() updateTodoDto: UpdateTodoDto,
+  ) {
+    return this.todosService.update(todoId, updateTodoDto)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todosService.remove(+id)
+  @Delete(':todoId')
+  remove(@Param('todoId') todoId: string) {
+    return this.todosService.remove(todoId)
   }
 }
