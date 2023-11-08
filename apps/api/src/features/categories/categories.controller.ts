@@ -12,8 +12,14 @@ import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
 import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 import { ToggleCategoryStatusDto } from './dto/toggle-category-status.dto'
+import { Serialize } from 'src/common/decorators/serialize.decorator'
+import { CategoryResponseDto } from './dto/category-response.dto'
 
-@Controller('categories')
+@Serialize(CategoryResponseDto)
+@Controller({
+  path: 'categories',
+  version: '1',
+})
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
