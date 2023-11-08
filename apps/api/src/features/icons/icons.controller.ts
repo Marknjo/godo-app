@@ -14,8 +14,20 @@ import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 import { ToggleIconsStatusDto } from './dto/toggle-icons-status.dto'
 import { Serialize } from 'src/common/decorators/serialize.decorator'
 import { IconResponseDto } from './dto/icon-response.dto'
+import { AccessAuth } from 'src/iam/authorization/decorators/access-auth.decorator'
+import { EAccessAuthTypes } from 'src/iam/authorization/enums/e-access-auth-types.enum'
+import { Auth } from 'src/iam/authentication/decorators/auth.decorator'
+import { EAuthTypes } from 'src/iam/authentication/enums/e-auth-types.enum'
+import { RestrictToRole } from 'src/iam/authorization/decorators/restrict-to-role.decorator'
+import {
+  EPremiumSubscribers,
+  eAdminMembersMap,
+} from 'src/iam/enums/e-roles.enum'
 
 @Serialize(IconResponseDto)
+@RestrictToRole(EPremiumSubscribers.ADMIN, ...eAdminMembersMap)
+@AccessAuth(EAccessAuthTypes.ROLE)
+@Auth(EAuthTypes.BEARER)
 @Controller({
   path: 'icons',
   version: '1',
