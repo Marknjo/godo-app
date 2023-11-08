@@ -10,6 +10,7 @@ import {
 import { CategoriesService } from './categories.service'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
+import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 
 @Controller('categories')
 export class CategoriesController {
@@ -25,21 +26,21 @@ export class CategoriesController {
     return this.categoriesService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id)
+  @Get(':categoryId')
+  findOne(@Param('categoryId', PerseMongoIdPipe) categoryId: string) {
+    return this.categoriesService.findOne(categoryId)
   }
 
-  @Patch(':id')
+  @Patch(':categoryId')
   update(
-    @Param('id') id: string,
+    @Param('categoryId', PerseMongoIdPipe) categoryId: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.categoriesService.update(+id, updateCategoryDto)
+    return this.categoriesService.update(categoryId, updateCategoryDto)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id)
+  @Delete(':categoryId')
+  remove(@Param('categoryId', PerseMongoIdPipe) categoryId: string) {
+    return this.categoriesService.remove(categoryId)
   }
 }
