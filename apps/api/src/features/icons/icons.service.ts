@@ -12,15 +12,15 @@ export class IconsService {
     return `This action returns all icons`
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} icon`
+  findOne(iconId: string) {
+    return `This action returns a #${iconId} icon`
   }
 
-  update(id: number, updateIconDto: UpdateIconDto) {
-    return `This action updates a #${id} icon`
+  update(iconId: string, updateIconDto: UpdateIconDto) {
+    return `This action updates a #${iconId} icon`
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} icon`
+  remove(iconId: string) {
+    return `This action removes a #${iconId} icon`
   }
 }

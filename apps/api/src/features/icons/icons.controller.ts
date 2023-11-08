@@ -10,6 +10,7 @@ import {
 import { IconsService } from './icons.service'
 import { CreateIconDto } from './dto/create-icon.dto'
 import { UpdateIconDto } from './dto/update-icon.dto'
+import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 
 @Controller('icons')
 export class IconsController {
@@ -25,18 +26,21 @@ export class IconsController {
     return this.iconsService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.iconsService.findOne(+id)
+  @Get(':iconId')
+  findOne(@Param('iconId', PerseMongoIdPipe) iconId: string) {
+    return this.iconsService.findOne(iconId)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIconDto: UpdateIconDto) {
-    return this.iconsService.update(+id, updateIconDto)
+  @Patch(':iconId')
+  update(
+    @Param('iconId', PerseMongoIdPipe) iconId: string,
+    @Body() updateIconDto: UpdateIconDto,
+  ) {
+    return this.iconsService.update(iconId, updateIconDto)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.iconsService.remove(+id)
+  @Delete(':iconId')
+  remove(@Param('iconId', PerseMongoIdPipe) iconId: string) {
+    return this.iconsService.remove(iconId)
   }
 }
