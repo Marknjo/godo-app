@@ -11,6 +11,7 @@ import { IconsService } from './icons.service'
 import { CreateIconDto } from './dto/create-icon.dto'
 import { UpdateIconDto } from './dto/update-icon.dto'
 import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
+import { ToggleIconsStatusDto } from './dto/toggle-icons-status.dto'
 
 @Controller('icons')
 export class IconsController {
@@ -37,6 +38,14 @@ export class IconsController {
     @Body() updateIconDto: UpdateIconDto,
   ) {
     return this.iconsService.update(iconId, updateIconDto)
+  }
+
+  @Patch(':iconId')
+  toggleStatus(
+    @Param('iconId', PerseMongoIdPipe) categoryId: string,
+    @Body() toggleStatusDto: ToggleIconsStatusDto,
+  ) {
+    return this.iconsService.toggleStatus(categoryId, toggleStatusDto)
   }
 
   @Delete(':iconId')

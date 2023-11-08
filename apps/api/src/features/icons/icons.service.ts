@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateIconDto } from './dto/create-icon.dto'
 import { UpdateIconDto } from './dto/update-icon.dto'
+import { ToggleIconsStatusDto } from './dto/toggle-icons-status.dto'
 
 @Injectable()
 export class IconsService {
@@ -18,6 +19,10 @@ export class IconsService {
 
   update(iconId: string, updateIconDto: UpdateIconDto) {
     return `This action updates a #${iconId} icon`
+  }
+
+  toggleStatus(iconId: string, toggleStatusDto: ToggleIconsStatusDto) {
+    return `toggleStatus`
   }
 
   remove(iconId: string) {
