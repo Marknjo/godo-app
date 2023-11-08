@@ -12,15 +12,15 @@ export class SubTodosService {
     return `This action returns all subTodos`
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subTodo`
+  findOne(subTodoId: string) {
+    return `This action returns a #${subTodoId} subTodo`
   }
 
-  update(id: number, updateSubTodoDto: UpdateSubTodoDto) {
-    return `This action updates a #${id} subTodo`
+  update(subTodoId: string, updateSubTodoDto: UpdateSubTodoDto) {
+    return `This action updates a #${subTodoId} subTodo`
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subTodo`
+  remove(subTodoId: string) {
+    return `This action removes a #${subTodoId} subTodo`
   }
 }

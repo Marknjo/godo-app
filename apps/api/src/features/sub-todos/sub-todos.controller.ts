@@ -10,6 +10,7 @@ import {
 import { SubTodosService } from './sub-todos.service'
 import { CreateSubTodoDto } from './dto/create-sub-todo.dto'
 import { UpdateSubTodoDto } from './dto/update-sub-todo.dto'
+import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 
 @Controller('sub-todos')
 export class SubTodosController {
@@ -25,18 +26,21 @@ export class SubTodosController {
     return this.subTodosService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subTodosService.findOne(+id)
+  @Get(':subTodoId')
+  findOne(@Param('subTodoId', PerseMongoIdPipe) subTodoId: string) {
+    return this.subTodosService.findOne(subTodoId)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubTodoDto: UpdateSubTodoDto) {
-    return this.subTodosService.update(+id, updateSubTodoDto)
+  @Patch(':subTodoId')
+  update(
+    @Param('subTodoId', PerseMongoIdPipe) subTodoId: string,
+    @Body() updateSubTodoDto: UpdateSubTodoDto,
+  ) {
+    return this.subTodosService.update(subTodoId, updateSubTodoDto)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subTodosService.remove(+id)
+  @Delete(':subTodoId')
+  remove(@Param('subTodoId', PerseMongoIdPipe) subTodoId: string) {
+    return this.subTodosService.remove(subTodoId)
   }
 }
