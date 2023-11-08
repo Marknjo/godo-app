@@ -14,8 +14,17 @@ import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 import { ToggleTodoStatusDto } from './dto/toggle-todo-status.dto'
 import { Serialize } from 'src/common/decorators/serialize.decorator'
 import { TodoResponseDto } from './dto/todo-response.dto'
+import { AccessAuth } from 'src/iam/authorization/decorators/access-auth.decorator'
+import { EAccessAuthTypes } from 'src/iam/authorization/enums/e-access-auth-types.enum'
+import { Auth } from 'src/iam/authentication/decorators/auth.decorator'
+import { EAuthTypes } from 'src/iam/authentication/enums/e-auth-types.enum'
+import { RestrictToRole } from 'src/iam/authorization/decorators/restrict-to-role.decorator'
+import { eAllMembersMap, eGeneralUsers } from 'src/iam/enums/e-roles.enum'
 
 @Serialize(TodoResponseDto)
+@RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
+@AccessAuth(EAccessAuthTypes.ROLE)
+@Auth(EAuthTypes.BEARER)
 @Controller({
   path: 'todos',
   version: '1',
