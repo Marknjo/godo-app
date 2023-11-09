@@ -28,12 +28,12 @@ export class CreateTodoDto {
   @IsDate()
   @IsOptional()
   @Type(() => Date)
-  startDuration?: Date
+  startAt?: Date
 
   @IsDate()
   @IsOptional()
   @Type(() => Date)
-  endDuration?: Date
+  endAt?: Date
 
   @IsMongoId()
   @IsOptional()

@@ -10,10 +10,10 @@ export class FreeTodoResponseDto extends DefaultResponseDto {
   description?: string
 
   @Expose()
-  startDuration?: string
+  startAt?: string
 
   @Expose()
-  endDuration?: string
+  endAt?: string
 
   @Expose()
   @Type(() => SlimIconResponseDto)

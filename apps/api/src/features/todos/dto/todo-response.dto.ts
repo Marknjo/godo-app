@@ -16,10 +16,10 @@ export class TodoResponseDto extends DefaultResponseDto {
   progressStage?: string | ECategoryStages
 
   @Expose()
-  startDuration?: Date
+  startAt?: Date
 
   @Expose()
-  endDuration?: Date
+  endAt?: Date
 
   @Expose()
   @Type(() => SlimUserResponseDto)
@@ -48,10 +48,10 @@ export class SlimTodoResponseDto {
   progressStage?: string | ECategoryStages
 
   @Expose()
-  startDuration?: Date
+  startAt?: Date
 
   @Expose()
-  endDuration?: Date
+  endAt?: Date
 
   @Expose()
   isEnabled: boolean

@@ -21,10 +21,10 @@ export class Todo {
   progressStage?: string | ECategoryStages
 
   @Prop()
-  startDuration?: Date
+  startAt?: Date
 
   @Prop()
-  endDuration?: Date
+  endAt?: Date
 
   @Prop({
     type: SchemaTypes.ObjectId,
@@ -56,8 +56,8 @@ export type TTodoDoc = HydratedDocument<Todo>
 // title: string
 // description?: string
 // progressStage?: string
-// startDuration?: Date
-// endDuration?: Date
+// startAt?: Date
+// endAt?: Date
 // userId: User
 // categoryId?: Category
 // iconId?: Icon
