@@ -1,7 +1,7 @@
 export enum EProjectStages {
-  BACKLOGS = 'backlogs',
+  BACKLOG = 'backlog',
   IN_PROGRESS = 'in progress',
-  DEVELOPED = 'developed',
-  TESTED = 'tested',
+  IMPLEMENTED = 'implemented',
+  TESTING = 'testing',
   DONE = 'done',
 }
