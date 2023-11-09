@@ -10,6 +10,7 @@ import {
 import { EProjectStages } from 'src/features/projects/enums/e-project-stages.enum'
 import { Project } from 'src/features/projects/schema/project.schema'
 import { Icon } from 'src/features/icons/schema/icon.schema'
+import { Todo } from '../schema/todo.schema'
 
 export class CreateTodoDto {
   @IsString()
@@ -37,9 +38,13 @@ export class CreateTodoDto {
 
   @IsMongoId()
   @IsOptional()
-  ProjectId?: Project
+  projectId?: Project
 
   @IsMongoId()
   @IsOptional()
   iconId?: Icon
+
+  @IsMongoId()
+  @IsOptional()
+  dependsOn?: Todo
 }

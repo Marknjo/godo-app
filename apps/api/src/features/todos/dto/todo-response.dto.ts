@@ -5,6 +5,26 @@ import { EProjectStages } from 'src/features/projects/enums/e-project-stages.enu
 import { SlimIconResponseDto } from 'src/features/icons/dto/icon-response.dto'
 import { SlimUserResponseDto } from 'src/iam/users/dto/user-response.dto'
 
+export class SlimTodoResponseDto {
+  @Expose()
+  id: string
+
+  @Expose()
+  title: string
+
+  @Expose()
+  progressStage?: string | EProjectStages
+
+  @Expose()
+  startAt?: Date
+
+  @Expose()
+  endAt?: Date
+
+  @Expose()
+  isEnabled: boolean
+}
+
 export class TodoResponseDto extends DefaultResponseDto {
   @Expose()
   title: string
@@ -27,7 +47,7 @@ export class TodoResponseDto extends DefaultResponseDto {
 
   @Expose()
   @Type(() => SlimProjectResponseDto)
-  ProjectId?: SlimProjectResponseDto
+  projectId?: SlimProjectResponseDto
 
   @Expose()
   @Type(() => SlimIconResponseDto)
@@ -35,24 +55,8 @@ export class TodoResponseDto extends DefaultResponseDto {
 
   @Expose()
   isEnabled: boolean
-}
-
-export class SlimTodoResponseDto {
-  @Expose()
-  id: string
 
   @Expose()
-  title: string
-
-  @Expose()
-  progressStage?: string | EProjectStages
-
-  @Expose()
-  startAt?: Date
-
-  @Expose()
-  endAt?: Date
-
-  @Expose()
-  isEnabled: boolean
+  @Type(() => SlimTodoResponseDto)
+  dependsOn?: SlimTodoResponseDto
 }

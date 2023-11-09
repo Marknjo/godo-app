@@ -36,7 +36,7 @@ export class Todo {
     type: SchemaTypes.ObjectId,
     ref: 'Project',
   })
-  ProjectId?: Project
+  projectId?: Project
 
   @Prop({
     type: SchemaTypes.ObjectId,
@@ -48,6 +48,12 @@ export class Todo {
     default: true,
   })
   isEnabled: boolean
+
+  @Prop({
+    type: SchemaTypes.ObjectId,
+    ref: 'Todo',
+  })
+  dependsOn?: Todo
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo)
@@ -59,6 +65,6 @@ export type TTodoDoc = HydratedDocument<Todo>
 // startAt?: Date
 // endAt?: Date
 // userId: User
-// ProjectId?: Project
+// projectId?: Project
 // iconId?: Icon
 // isEnabled: boolean
