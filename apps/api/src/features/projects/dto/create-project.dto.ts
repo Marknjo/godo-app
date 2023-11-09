@@ -7,9 +7,9 @@ import {
   MaxLength,
 } from 'class-validator'
 import { Transform } from 'class-transformer'
-import { ECategoryStages } from '../enums/e-category-stages.enum'
+import { EProjectStages } from '../enums/e-project-stages.enum'
 
-export class CreateCategoryDto {
+export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
@@ -27,7 +27,7 @@ export class CreateCategoryDto {
   @IsNotEmpty({ each: true })
   @IsString({ each: true })
   @Transform(({ value }) => value.map((val: string) => val.trim()))
-  stages?: Array<ECategoryStages | string>
+  stages?: Array<EProjectStages | string>
 
   @IsOptional()
   @IsMongoId()

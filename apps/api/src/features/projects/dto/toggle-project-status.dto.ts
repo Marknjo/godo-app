@@ -1,6 +1,6 @@
 import { IsBoolean } from 'class-validator'
 
-export class ToggleCategoryStatusDto {
+export class ToggleProjectStatusDto {
   @IsBoolean()
   isEnabled: boolean
 }

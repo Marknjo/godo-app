@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, SchemaTypes } from 'mongoose'
-import { ECategoryStages } from 'src/features/categories/enums/e-category-stages.enum'
-import { Category } from 'src/features/categories/schema/category.schema'
+import { EProjectStages } from 'src/features/projects/enums/e-project-stages.enum'
+import { Project } from 'src/features/projects/schema/project.schema'
 import { Icon } from 'src/features/icons/schema/icon.schema'
 import { User } from 'src/iam/users/schema/user.schema'
 
@@ -18,7 +18,7 @@ export class Todo {
   description?: string
 
   @Prop()
-  progressStage?: string | ECategoryStages
+  progressStage?: string | EProjectStages
 
   @Prop()
   startAt?: Date
@@ -34,13 +34,13 @@ export class Todo {
 
   @Prop({
     type: SchemaTypes.ObjectId,
-    ref: 'Category',
+    ref: 'Project',
   })
-  categoryId?: Category
+  ProjectId?: Project
 
   @Prop({
     type: SchemaTypes.ObjectId,
-    ref: 'Category',
+    ref: 'Project',
   })
   iconId?: Icon
 
@@ -59,6 +59,6 @@ export type TTodoDoc = HydratedDocument<Todo>
 // startAt?: Date
 // endAt?: Date
 // userId: User
-// categoryId?: Category
+// ProjectId?: Project
 // iconId?: Icon
 // isEnabled: boolean

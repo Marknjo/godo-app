@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer'
 import { DefaultResponseDto } from 'src/common/dtos/default-response.dto'
-import { SlimCategoryResponseDto } from 'src/features/categories/dto/category-response.dto'
-import { ECategoryStages } from 'src/features/categories/enums/e-category-stages.enum'
+import { SlimProjectResponseDto } from 'src/features/projects/dto/project-response.dto'
+import { EProjectStages } from 'src/features/projects/enums/e-project-stages.enum'
 import { SlimIconResponseDto } from 'src/features/icons/dto/icon-response.dto'
 import { SlimUserResponseDto } from 'src/iam/users/dto/user-response.dto'
 
@@ -13,7 +13,7 @@ export class TodoResponseDto extends DefaultResponseDto {
   description?: string
 
   @Expose()
-  progressStage?: string | ECategoryStages
+  progressStage?: string | EProjectStages
 
   @Expose()
   startAt?: Date
@@ -26,8 +26,8 @@ export class TodoResponseDto extends DefaultResponseDto {
   userId: SlimUserResponseDto
 
   @Expose()
-  @Type(() => SlimCategoryResponseDto)
-  categoryId?: SlimCategoryResponseDto
+  @Type(() => SlimProjectResponseDto)
+  ProjectId?: SlimProjectResponseDto
 
   @Expose()
   @Type(() => SlimIconResponseDto)
@@ -45,7 +45,7 @@ export class SlimTodoResponseDto {
   title: string
 
   @Expose()
-  progressStage?: string | ECategoryStages
+  progressStage?: string | EProjectStages
 
   @Expose()
   startAt?: Date

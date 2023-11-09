@@ -7,8 +7,8 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator'
-import { ECategoryStages } from 'src/features/categories/enums/e-category-stages.enum'
-import { Category } from 'src/features/categories/schema/category.schema'
+import { EProjectStages } from 'src/features/projects/enums/e-project-stages.enum'
+import { Project } from 'src/features/projects/schema/project.schema'
 import { Icon } from 'src/features/icons/schema/icon.schema'
 
 export class CreateTodoDto {
@@ -23,7 +23,7 @@ export class CreateTodoDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  progressStage?: string | ECategoryStages
+  progressStage?: string | EProjectStages
 
   @IsDate()
   @IsOptional()
@@ -37,7 +37,7 @@ export class CreateTodoDto {
 
   @IsMongoId()
   @IsOptional()
-  categoryId?: Category
+  ProjectId?: Project
 
   @IsMongoId()
   @IsOptional()

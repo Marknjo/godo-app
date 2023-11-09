@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, SchemaTypes } from 'mongoose'
-import { ECategoryStages } from '../enums/e-category-stages.enum'
+import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Icon } from 'src/features/icons/schema/icon.schema'
 
 @Schema({
@@ -8,7 +8,7 @@ import { Icon } from 'src/features/icons/schema/icon.schema'
   toObject: { virtuals: true },
   timestamps: true,
 })
-export class Category {
+export class Project {
   @Prop({
     index: 'text',
   })
@@ -20,7 +20,7 @@ export class Category {
   @Prop({
     index: true,
   })
-  stages: Array<ECategoryStages | string>
+  stages: Array<EProjectStages | string>
 
   @Prop({
     type: SchemaTypes.ObjectId,
@@ -35,5 +35,5 @@ export class Category {
   isEnabled: boolean
 }
 
-export const CategorySchema = SchemaFactory.createForClass(Category)
-export type TCategoryDoc = HydratedDocument<Category>
+export const ProjectSchema = SchemaFactory.createForClass(Project)
+export type TProjectDoc = HydratedDocument<Project>

@@ -1,9 +1,9 @@
 import { SlimIconResponseDto } from 'src/features/icons/dto/icon-response.dto'
-import { ECategoryStages } from '../enums/e-category-stages.enum'
+import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Expose, Type } from 'class-transformer'
 import { DefaultResponseDto } from 'src/common/dtos/default-response.dto'
 
-export class CategoryResponseDto extends DefaultResponseDto {
+export class ProjectResponseDto extends DefaultResponseDto {
   @Expose()
   title: string
 
@@ -11,7 +11,7 @@ export class CategoryResponseDto extends DefaultResponseDto {
   description?: string
 
   @Expose()
-  stages?: Array<ECategoryStages | string>
+  stages?: Array<EProjectStages | string>
 
   @Type(() => SlimIconResponseDto)
   iconsId?: SlimIconResponseDto
@@ -20,7 +20,7 @@ export class CategoryResponseDto extends DefaultResponseDto {
   isEnabled: boolean
 }
 
-export class SlimCategoryResponseDto {
+export class SlimProjectResponseDto {
   @Expose()
   id: string
 
@@ -28,5 +28,5 @@ export class SlimCategoryResponseDto {
   title: string
 
   @Expose()
-  stages?: Array<ECategoryStages | string>
+  stages?: Array<EProjectStages | string>
 }

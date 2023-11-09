@@ -3,8 +3,8 @@ import { TodosService } from './todos.service'
 import { TodosController } from './todos.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Todo, TodoSchema } from './schema/todo.schema'
-import { CategoriesModule } from '../categories/categories.module'
 import { IconsModule } from '../icons/icons.module'
+import { ProjectsModule } from '../projects/projects.module'
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { IconsModule } from '../icons/icons.module'
         },
       },
     ]),
-    CategoriesModule,
+    ProjectsModule,
     IconsModule,
   ],
   controllers: [TodosController],
