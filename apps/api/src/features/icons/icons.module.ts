@@ -3,6 +3,7 @@ import { IconsService } from './icons.service'
 import { IconsController } from './icons.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Icon, IconSchema } from './schema/icon.schema'
+import { FactoryUtils } from 'src/common/services/factory.utils'
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Icon, IconSchema } from './schema/icon.schema'
     ]),
   ],
   controllers: [IconsController],
-  providers: [IconsService],
+  providers: [IconsService, FactoryUtils],
   exports: [IconsService],
 })
 export class IconsModule {}
