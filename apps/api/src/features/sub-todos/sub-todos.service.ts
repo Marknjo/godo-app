@@ -85,12 +85,64 @@ export class SubTodosService {
     return foundTodo
   }
 
-  update(
-    subTodoId: string,
+  /**
+   * @NOTE: To move a sub-todo to another parent todo
+   *
+   * @param updateSubTodoDto
+   * @param activeUser
+   * @param options
+   * @returns
+   */
+  async update(
     updateSubTodoDto: UpdateSubTodoDto,
     activeUser: IActiveUser,
+    options: TSubTodoOptions,
   ) {
-    return `This action updates a #${subTodoId} subTodo`
+    const defaultOptions = {
+      filters: {},
+    }
+
+    const { subTodoId, filters } = {
+      ...defaultOptions,
+      ...options,
+    }
+
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+
+    const action = 'update'
+
+    this.throwIfNoIdAndFilters(subTodoId, filters, whoIs, action)
+    //
+    const updatedTodo = await this.subTodoModel.findOneAndUpdate(
+      {
+        userId: activeUser,
+        ...(subTodoId ? { _id: subTodoId } : {}),
+        ...filters,
+      },
+      updateSubTodoDto,
+      {
+        new: true,
+      },
+    )
+
+    if (!updatedTodo) {
+      this.logger.warn(
+        `User with id ${whoIs} could not update a sub-todo with id ${subTodoId}`,
+      )
+
+      throw new BadRequestException(
+        `The requested todo not found in your tasks`,
+      )
+    }
+
+    const message = `Updating sub-todo was successful`
+
+    this.logger.log(`User successfully updated a sub-todo`)
+
+    return {
+      message,
+      data: updatedTodo,
+    }
   }
 
   remove(subTodoId: string, activeUser: IActiveUser) {
