@@ -46,8 +46,43 @@ export class SubTodosService {
     }
   }
 
-  findOne(subTodoId: string, activeUser: IActiveUser) {
-    return `This action returns a #${subTodoId} subTodo`
+  async findOne(activeUser: IActiveUser, options: TSubTodoOptions) {
+    const defaultOptions = {
+      filters: {},
+    }
+
+    const { subTodoId, filters } = {
+      ...defaultOptions,
+      ...options,
+    }
+
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+
+    const action = 'find'
+
+    this.throwIfNoIdAndFilters(subTodoId, filters, whoIs, action)
+
+    const foundTodo = await this.subTodoModel.findOne(
+      {
+        userId: activeUser,
+        ...(subTodoId ? { _id: subTodoId } : {}),
+        ...filters,
+      },
+      {},
+      {
+        new: true,
+      },
+    )
+
+    if (!foundTodo) {
+      this.logger.warn(
+        `User with id ${whoIs} could not find a sub-todo with id ${subTodoId}`,
+      )
+
+      throw new NotFoundException(`The requested todo not found in your tasks`)
+    }
+
+    return foundTodo
   }
 
   update(
