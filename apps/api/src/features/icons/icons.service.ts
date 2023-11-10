@@ -78,8 +78,31 @@ export class IconsService {
     return foundIcon
   }
 
-  update(iconId: string, updateIconDto: UpdateIconDto) {
-    return `This action updates a #${iconId} icon`
+  async update(
+    iconId: string,
+    updateIconDto: Partial<UpdateIconDto & ToggleIconsStatusDto>,
+  ) {
+    const updatedIcon = await this.iconModel.findByIdAndUpdate(
+      iconId,
+      updateIconDto,
+      {
+        new: true,
+      },
+    )
+
+    if (!updateIconDto) {
+      this.logger.warn(`Error while updating icon with ${iconId}`)
+
+      throw new BadRequestException(`Updating icon with id ${iconId} failed`)
+    }
+
+    const message = `Icon with ${iconId} was successfully updated`
+    this.logger.log(message)
+
+    return {
+      message,
+      data: updatedIcon,
+    }
   }
 
   toggleStatus(iconId: string, toggleStatusDto: ToggleIconsStatusDto) {
