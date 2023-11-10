@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common'
 import { SubTodosService } from './sub-todos.service'
 import { CreateSubTodoDto } from './dto/create-sub-todo.dto'
@@ -19,6 +20,10 @@ import { EAccessAuthTypes } from 'src/iam/authorization/enums/e-access-auth-type
 import { EAuthTypes } from 'src/iam/authentication/enums/e-auth-types.enum'
 import { RestrictToRole } from 'src/iam/authorization/decorators/restrict-to-role.decorator'
 import { eAllMembersMap, ePremiumSubscribers } from 'src/iam/enums/e-roles.enum'
+import { FilterQuery } from 'mongoose'
+import { SubTodo } from './schema/sub-todo.schema'
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator'
+import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 
 @Serialize(SubTodoResponseDto)
 @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
@@ -32,30 +37,43 @@ export class SubTodosController {
   constructor(private readonly subTodosService: SubTodosService) {}
 
   @Post()
-  create(@Body() createSubTodoDto: CreateSubTodoDto) {
-    return this.subTodosService.create(createSubTodoDto)
+  create(
+    @Body() createSubTodoDto: CreateSubTodoDto,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.subTodosService.create(createSubTodoDto, activeUser)
   }
 
   @Get()
-  findAll() {
-    return this.subTodosService.findAll()
+  findAll(
+    @Query() filters: FilterQuery<SubTodo>,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.subTodosService.findAll(filters, activeUser)
   }
 
   @Get(':subTodoId')
-  findOne(@Param('subTodoId', PerseMongoIdPipe) subTodoId: string) {
-    return this.subTodosService.findOne(subTodoId)
+  findOne(
+    @Param('subTodoId', PerseMongoIdPipe) subTodoId: string,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.subTodosService.findOne(subTodoId, activeUser)
   }
 
   @Patch(':subTodoId')
   update(
     @Param('subTodoId', PerseMongoIdPipe) subTodoId: string,
     @Body() updateSubTodoDto: UpdateSubTodoDto,
+    @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.subTodosService.update(subTodoId, updateSubTodoDto)
+    return this.subTodosService.update(subTodoId, updateSubTodoDto, activeUser)
   }
 
   @Delete(':subTodoId')
-  remove(@Param('subTodoId', PerseMongoIdPipe) subTodoId: string) {
-    return this.subTodosService.remove(subTodoId)
+  remove(
+    @Param('subTodoId', PerseMongoIdPipe) subTodoId: string,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.subTodosService.remove(subTodoId, activeUser)
   }
 }
