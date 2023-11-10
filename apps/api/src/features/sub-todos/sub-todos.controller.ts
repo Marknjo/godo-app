@@ -57,7 +57,7 @@ export class SubTodosController {
     @Param('subTodoId', PerseMongoIdPipe) subTodoId: string,
     @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.subTodosService.findOne(subTodoId, activeUser)
+    return this.subTodosService.findOne(activeUser, { subTodoId })
   }
 
   @Patch(':subTodoId')
@@ -66,7 +66,9 @@ export class SubTodosController {
     @Body() updateSubTodoDto: UpdateSubTodoDto,
     @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.subTodosService.update(subTodoId, updateSubTodoDto, activeUser)
+    return this.subTodosService.update(updateSubTodoDto, activeUser, {
+      subTodoId,
+    })
   }
 
   @Delete(':subTodoId')
@@ -74,6 +76,8 @@ export class SubTodosController {
     @Param('subTodoId', PerseMongoIdPipe) subTodoId: string,
     @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.subTodosService.remove(subTodoId, activeUser)
+    return this.subTodosService.remove(activeUser, {
+      subTodoId,
+    })
   }
 }
