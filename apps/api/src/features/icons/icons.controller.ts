@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common'
 import { IconsService } from './icons.service'
 import { CreateIconDto } from './dto/create-icon.dto'
@@ -23,6 +24,8 @@ import {
   EPremiumSubscribers,
   eAdminMembersMap,
 } from 'src/iam/enums/e-roles.enum'
+import { FilterQuery } from 'mongoose'
+import { Icon } from './schema/icon.schema'
 
 @Serialize(IconResponseDto)
 @RestrictToRole(EPremiumSubscribers.ADMIN, ...eAdminMembersMap)
@@ -41,8 +44,8 @@ export class IconsController {
   }
 
   @Get()
-  findAll() {
-    return this.iconsService.findAll()
+  findAll(@Query() filters: FilterQuery<Icon>) {
+    return this.iconsService.findAll(filters)
   }
 
   @Get(':iconId')
