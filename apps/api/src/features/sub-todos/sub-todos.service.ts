@@ -33,8 +33,17 @@ export class SubTodosService {
     })
   }
 
-  findAll(filters: FilterQuery<SubTodo>, activeUser: IActiveUser) {
-    return `This action returns all subTodos`
+  async findAll(filters: FilterQuery<SubTodo>, activeUser: IActiveUser) {
+    const foundTodos = await this.subTodoModel
+      .find({
+        ...filters,
+        userId: activeUser.sub,
+      })
+      .sort('-createdAt')
+
+    return {
+      data: foundTodos,
+    }
   }
 
   findOne(subTodoId: string, activeUser: IActiveUser) {
