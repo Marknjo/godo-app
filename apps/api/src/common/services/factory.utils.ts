@@ -43,4 +43,14 @@ export class FactoryUtils {
     }
     return message
   }
+
+  slugify(prettyName: string, prefix?: string) {
+    let str = prettyName.toLowerCase().replaceAll(' ', '-')
+
+    if (prefix) {
+      str = `${prefix}-${str}`
+    }
+
+    return str
+  }
 }
