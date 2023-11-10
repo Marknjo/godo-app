@@ -106,7 +106,7 @@ export class IconsService {
   }
 
   toggleStatus(iconId: string, toggleStatusDto: ToggleIconsStatusDto) {
-    return `toggleStatus`
+    return this.update(iconId, toggleStatusDto)
   }
 
   remove(iconId: string) {
