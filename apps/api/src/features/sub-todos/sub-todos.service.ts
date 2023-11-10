@@ -1,11 +1,19 @@
-import { Injectable, Logger, LoggerService } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  LoggerService,
+  NotFoundException,
+} from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { FilterQuery, Model } from 'mongoose'
+
+import { SubTodo } from './schema/sub-todo.schema'
 import { CreateSubTodoDto } from './dto/create-sub-todo.dto'
 import { UpdateSubTodoDto } from './dto/update-sub-todo.dto'
-import { FilterQuery, Model } from 'mongoose'
-import { SubTodo } from './schema/sub-todo.schema'
-import { InjectModel } from '@nestjs/mongoose'
 import { FactoryUtils } from 'src/common/services/factory.utils'
 import { IActiveUser } from 'src/iam/interfaces/i-active-user'
+import { TSubTodoOptions } from './types/t-sub-todo-options'
 
 @Injectable()
 export class SubTodosService {
@@ -19,7 +27,10 @@ export class SubTodosService {
   ) {}
 
   create(createSubTodoDto: CreateSubTodoDto, activeUser: IActiveUser) {
-    return 'This action adds a new subTodo'
+    return this.subTodoModel.create({
+      ...createSubTodoDto,
+      userId: activeUser.sub,
+    })
   }
 
   findAll(filters: FilterQuery<SubTodo>, activeUser: IActiveUser) {
