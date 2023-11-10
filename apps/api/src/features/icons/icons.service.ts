@@ -58,8 +58,12 @@ export class IconsService {
     }
   }
 
-  findAll() {
-    return `This action returns all icons`
+  async findAll(filters: FilterQuery<Icon> = {}) {
+    const allIcons = await this.iconModel.find(filters).sort('prettyName')
+
+    return {
+      data: allIcons,
+    }
   }
 
   findOne(iconId: string) {
