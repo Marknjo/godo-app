@@ -145,8 +145,46 @@ export class SubTodosService {
     }
   }
 
-  remove(subTodoId: string, activeUser: IActiveUser) {
-    return `This action removes a #${subTodoId} subTodo`
+  async remove(activeUser: IActiveUser, options: TSubTodoOptions) {
+    const defaultOptions = {
+      filters: {},
+    }
+
+    const { subTodoId, filters } = {
+      ...defaultOptions,
+      ...options,
+    }
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+
+    const action = 'remove'
+
+    this.throwIfNoIdAndFilters(subTodoId, filters, whoIs, action)
+
+    //
+    const deletedTodo = await this.subTodoModel.findOneAndDelete({
+      userId: activeUser,
+      ...(subTodoId ? { _id: subTodoId } : {}),
+      ...filters,
+    })
+
+    if (!deletedTodo) {
+      this.logger.warn(
+        `User with id ${whoIs} could not delete a sub-todo with id ${subTodoId}`,
+      )
+
+      throw new BadRequestException(
+        `Deleting this sub-todo failed, please try again`,
+      )
+    }
+
+    const message = `Deleting sub-todo was successful`
+
+    this.logger.log(`User successfully deleted a sub-todo`)
+
+    return {
+      message,
+      data: deletedTodo,
+    }
   }
 
   /**
