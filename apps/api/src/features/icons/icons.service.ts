@@ -66,8 +66,16 @@ export class IconsService {
     }
   }
 
-  findOne(iconId: string) {
-    return `This action returns a #${iconId} icon`
+  async findOne(iconId: string) {
+    const foundIcon = await this.iconModel.findById(iconId)
+
+    if (!foundIcon) {
+      this.logger.warn(`User is trying to access icon not in the database`)
+
+      throw new NotFoundException(`Icon with id ${iconId} not found`)
+    }
+
+    return foundIcon
   }
 
   update(iconId: string, updateIconDto: UpdateIconDto) {
