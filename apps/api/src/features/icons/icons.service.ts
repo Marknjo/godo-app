@@ -109,7 +109,21 @@ export class IconsService {
     return this.update(iconId, toggleStatusDto)
   }
 
-  remove(iconId: string) {
-    return `This action removes a #${iconId} icon`
+  async remove(iconId: string) {
+    const deletedIcon = await this.iconModel.findByIdAndDelete(iconId)
+
+    if (!deletedIcon) {
+      this.logger.warn(`Error while deleting icon with ${iconId}`)
+
+      throw new BadRequestException(`Deleting icon with id ${iconId} failed`)
+    }
+
+    const message = `Icon with ${iconId} was successfully deleted`
+    this.logger.log(message)
+
+    return {
+      message,
+      data: deletedIcon,
+    }
   }
 }
