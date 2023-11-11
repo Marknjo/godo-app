@@ -24,4 +24,12 @@ export interface IActiveUser {
    *   can have
    */
   totalTeamMembers: number
+
+  /**
+   * Exposes total number of projects a user have created
+   * - manly for capping subscribers,
+   *   i.e. Standard Subscribers have a maximum of
+   *   12 projects, while guest 3 projects
+   */
+  totalProjects: number
 }
