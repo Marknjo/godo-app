@@ -106,7 +106,9 @@ export class AccessTokenGuard implements CanActivate {
     const baseRole =
       populatedAccessDoc.baseRole as unknown as EPremiumSubscribers
 
-    const { email, totalTeamMembers } = populatedAccessDoc.accountOwner
+    const { email, totalTeamMembers, totalProjects } =
+      populatedAccessDoc.accountOwner
+
     const { name: role } = populatedAccessDoc.roleId
 
     const reqOptions = {
@@ -116,6 +118,7 @@ export class AccessTokenGuard implements CanActivate {
       email,
       role,
       totalTeamMembers,
+      totalProjects,
     } as IActiveUser
 
     req[ACTIVE_USER_KEY] = reqOptions
