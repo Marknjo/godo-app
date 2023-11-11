@@ -18,6 +18,12 @@ export class UserResponseDto extends DefaultResponseDto {
 
   @Expose()
   bio?: string
+
+  @Expose()
+  totalProjects?: string
+
+  @Expose()
+  totalTeamMembers?: string
 }
 
 export class SlimUserResponseDto {

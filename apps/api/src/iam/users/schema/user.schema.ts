@@ -69,6 +69,11 @@ export class User {
     default: 0,
   })
   totalTeamMembers?: number
+
+  @Prop({
+    default: 0,
+  })
+  totalProjects?: number
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
