@@ -3,6 +3,7 @@ import { HydratedDocument, SchemaTypes } from 'mongoose'
 import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Icon } from 'src/features/icons/schema/icon.schema'
 import { Todo } from 'src/features/todos/schema/todo.schema'
+import { EProjectTypes } from '../enums/e-project-types.enum'
 
 @Schema({
   toJSON: { virtuals: true },
@@ -11,7 +12,7 @@ import { Todo } from 'src/features/todos/schema/todo.schema'
 })
 export class Project {
   @Prop({
-    index: 'text',
+    unique: true,
   })
   title: string
 
@@ -52,6 +53,18 @@ export class Project {
   progressStage: EProjectStages | string
 
   @Prop({
+    type: String,
+    enum: {
+      values: [...Object.values(EProjectTypes)],
+      message: `Received {VALUE}, while expects project to be ${Object.values(
+        EProjectTypes,
+      ).join(' or ')}`,
+    },
+    default: EProjectTypes.ROOT,
+  })
+  projectType: EProjectTypes
+
+  @Prop({
     schema: SchemaTypes.ObjectId,
     ref: 'Project',
   })
@@ -79,7 +92,7 @@ export class Project {
 export const ProjectSchema = SchemaFactory.createForClass(Project)
 export type TProjectDoc = HydratedDocument<Project>
 
-ProjectSchema.virtual('todos', {
+ProjectSchema.virtual('tasks', {
   foreignField: 'projectId',
   localField: '_id',
   ref: Todo,
