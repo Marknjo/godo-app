@@ -79,7 +79,17 @@ export class TodosService {
   }
 
   async findAll(filters: FilterQuery<Todo>, activeUser: IActiveUser) {
-    return 'findAll'
+    const todos = await this.todoModel
+      .find({
+        userId: activeUser.sub,
+        ...filters,
+      })
+      .sort('-createdAt')
+      .populate(this.populateConfigs())
+
+    return {
+      data: todos,
+    }
   }
 
   findOne(todoId: string, activeUser: IActiveUser) {
