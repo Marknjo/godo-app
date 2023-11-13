@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common'
 import { TodosService } from './todos.service'
 import { CreateTodoDto } from './dto/create-todo.dto'
@@ -26,6 +27,10 @@ import {
 } from 'src/iam/enums/e-roles.enum'
 import { CreateFreeTodoDto } from './dto/create-free-todo.dto'
 import { FreeTodoResponseDto } from './dto/free-todo-response.dto'
+import { FilterQuery } from 'mongoose'
+import { Todo } from './schema/todo.schema'
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator'
+import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 
 @Serialize(TodoResponseDto)
 @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
@@ -41,24 +46,36 @@ export class TodosController {
   @Serialize(FreeTodoResponseDto)
   @RestrictToRole()
   @Post()
-  createFree(@Body() createTodoDto: CreateFreeTodoDto) {
-    return this.todosService.createFree(createTodoDto)
+  createFree(
+    @Body() createTodoDto: CreateFreeTodoDto,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.todosService.createFree(createTodoDto, activeUser)
   }
 
   @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
   @Post('/premium')
-  create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todosService.create(createTodoDto)
+  create(
+    @Body() createTodoDto: CreateTodoDto,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.todosService.create(createTodoDto, activeUser)
   }
 
   @Get()
-  findAll() {
-    return this.todosService.findAll()
+  findAll(
+    @Query() filters: FilterQuery<Todo> = {},
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.todosService.findAll(filters, activeUser)
   }
 
   @Get(':todoId')
-  findOne(@Param('todoId', PerseMongoIdPipe) todoId: string) {
-    return this.todosService.findOne(todoId)
+  findOne(
+    @Param('todoId', PerseMongoIdPipe) todoId: string,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.todosService.findOne(todoId, activeUser)
   }
 
   @Serialize(FreeTodoResponseDto)
@@ -66,8 +83,9 @@ export class TodosController {
   updateFree(
     @Param('todoId', PerseMongoIdPipe) todoId: string,
     @Body() updateTodoDto: UpdateTodoDto,
+    @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.todosService.updateFree(todoId, updateTodoDto)
+    return this.todosService.updateFree(todoId, updateTodoDto, activeUser)
   }
 
   @RestrictToRole(...ePremiumSubscribers, ...eAllMembersMap)
@@ -75,8 +93,9 @@ export class TodosController {
   update(
     @Param('todoId', PerseMongoIdPipe) todoId: string,
     @Body() updateTodoDto: UpdateTodoDto,
+    @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.todosService.update(todoId, updateTodoDto)
+    return this.todosService.update(todoId, updateTodoDto, activeUser)
   }
 
   @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
@@ -84,12 +103,20 @@ export class TodosController {
   toggleStatus(
     @Param('todoId', PerseMongoIdPipe) ProjectId: string,
     @Body() toggleStatusDto: ToggleTodoStatusDto,
+    @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.todosService.toggleStatus(ProjectId, toggleStatusDto)
+    return this.todosService.toggleStatus(
+      ProjectId,
+      toggleStatusDto,
+      activeUser,
+    )
   }
 
   @Delete(':todoId')
-  remove(@Param('todoId', PerseMongoIdPipe) todoId: string) {
-    return this.todosService.remove(todoId)
+  remove(
+    @Param('todoId', PerseMongoIdPipe) todoId: string,
+    @ActiveUser() activeUser: IActiveUser,
+  ) {
+    return this.todosService.remove(todoId, activeUser)
   }
 }
