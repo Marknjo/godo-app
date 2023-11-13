@@ -1,10 +1,14 @@
-import { IsMongoId } from 'class-validator'
+import { IsMongoId, IsOptional } from 'class-validator'
 import { Todo } from 'src/features/todos/schema/todo.schema'
 
 export class CreateSubTodoDto {
   @IsMongoId()
-  todoId: Todo
+  subTodo: Todo
 
   @IsMongoId()
-  subTodoId: Todo
+  parentId: Todo
+
+  @IsOptional()
+  @IsMongoId()
+  subParentId?: Todo
 }

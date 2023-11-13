@@ -13,13 +13,19 @@ export class SubTodo {
     type: SchemaTypes.ObjectId,
     ref: 'Todo',
   })
-  todoId: Todo
+  subTodo: Todo
 
   @Prop({
     type: SchemaTypes.ObjectId,
     ref: 'Todo',
   })
-  subTodoId: Todo
+  parentId: Todo
+
+  @Prop({
+    type: SchemaTypes.ObjectId,
+    ref: 'Todo',
+  })
+  subParentId?: Todo
 
   @Prop({
     type: SchemaTypes.ObjectId,

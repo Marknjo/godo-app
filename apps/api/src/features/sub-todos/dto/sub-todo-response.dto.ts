@@ -4,10 +4,13 @@ import { SlimUserResponseDto } from 'src/iam/users/dto/user-response.dto'
 
 export class SubTodoResponseDto {
   @Type(() => SlimTodoResponseDto)
-  todoId: SlimTodoResponseDto
+  subTodo: SlimTodoResponseDto
 
   @Type(() => SlimTodoResponseDto)
-  subTodoId: SlimTodoResponseDto
+  parentId: SlimTodoResponseDto
+
+  @Type(() => SlimTodoResponseDto)
+  subParentId: SlimTodoResponseDto
 
   @Type(() => SlimUserResponseDto)
   userId: SlimUserResponseDto
