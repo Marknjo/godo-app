@@ -8,4 +8,6 @@ export class CreateFreeTodoDto extends PickType(CreateTodoDto, [
   'startAt',
   'endAt',
   'iconId',
+  'parentId',
+  'subParentId',
 ]) {}

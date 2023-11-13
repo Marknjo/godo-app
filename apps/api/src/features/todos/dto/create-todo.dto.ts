@@ -42,6 +42,14 @@ export class CreateTodoDto {
 
   @IsMongoId()
   @IsOptional()
+  parentId?: Todo
+
+  @IsMongoId()
+  @IsOptional()
+  subParentId?: Todo
+
+  @IsMongoId()
+  @IsOptional()
   iconId?: Icon
 
   @IsMongoId()
