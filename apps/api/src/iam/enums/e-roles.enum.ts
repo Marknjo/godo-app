@@ -37,6 +37,7 @@ export enum EGeneralUsers {
 export enum EPremiumSubscribers {
   TEAM_USER = ERoles.TEAM_USER,
   PREMIUM_USER = ERoles.PREMIUM_USER,
+  STANDARD_USER = ERoles.STANDARD_USER,
   GUEST_USER = ERoles.GUEST_USER,
   ADMIN = ERoles.ADMIN,
   WHITELISTED = ERoles.WHITELISTED,
