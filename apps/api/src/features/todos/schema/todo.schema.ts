@@ -68,3 +68,10 @@ export type TTodoDoc = HydratedDocument<Todo>
 // projectId?: Project
 // iconId?: Icon
 // isEnabled: boolean
+
+// relationship sub-todos of a give todo
+TodoSchema.virtual('parentTodos', {
+  localField: '_id',
+  foreignField: 'subTodo',
+  ref: 'SubTodo',
+})
