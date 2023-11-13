@@ -1,5 +1,6 @@
 import { Icon } from 'src/features/icons/schema/icon.schema'
 import {
+  IsEnum,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
@@ -9,6 +10,7 @@ import {
 import { Transform, Type } from 'class-transformer'
 import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Project } from '../schema/project.schema'
+import { EProjectTypes } from '../enums/e-project-types.enum'
 
 export class CreateProjectDto {
   @IsString()
@@ -16,6 +18,10 @@ export class CreateProjectDto {
   @MaxLength(100)
   @Transform(({ value }) => value.trim())
   title: string
+
+  @IsOptional()
+  @IsEnum(EProjectTypes)
+  projectType?: EProjectTypes
 
   @IsOptional()
   @IsString()

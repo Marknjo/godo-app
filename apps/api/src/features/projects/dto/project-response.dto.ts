@@ -2,6 +2,7 @@ import { SlimIconResponseDto } from 'src/features/icons/dto/icon-response.dto'
 import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Expose, Transform, Type } from 'class-transformer'
 import { DefaultResponseDto } from 'src/common/dtos/default-response.dto'
+import { EProjectTypes } from '../enums/e-project-types.enum'
 
 export class SlimProjectResponseDto {
   @Expose()
@@ -9,6 +10,9 @@ export class SlimProjectResponseDto {
 
   @Expose()
   title: string
+
+  @Expose()
+  projectType?: EProjectTypes
 
   @Expose()
   stages?: Array<EProjectStages | string>
