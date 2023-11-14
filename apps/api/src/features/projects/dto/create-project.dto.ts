@@ -11,6 +11,7 @@ import { Transform, Type } from 'class-transformer'
 import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Project } from '../schema/project.schema'
 import { EProjectTypes } from '../enums/e-project-types.enum'
+import { EProjectTypeBehavior } from '../enums/e-project-type-behavior.enum'
 
 export class CreateProjectDto {
   @IsString()
@@ -22,6 +23,10 @@ export class CreateProjectDto {
   @IsOptional()
   @IsEnum(EProjectTypes)
   projectType?: EProjectTypes
+
+  @IsOptional()
+  @IsEnum(EProjectTypeBehavior)
+  projectTypeBehavior?: EProjectTypeBehavior
 
   @IsOptional()
   @IsString()
@@ -64,3 +69,31 @@ export class CreateProjectDto {
   @IsOptional()
   dependsOn?: Project
 }
+
+/* 
+  
+   "title": string
+
+  "projectType":  'root','sub-project', 'leaf'
+
+  "projectTypeBehavior": 'normal','leafy',
+
+  "description": string
+
+  "stages": Array<EProjectStages | string>
+
+  "iconsId": Icon
+
+  "progressStage": EProjectStages | string
+
+  "rootParentId": Project
+
+  "subParentId": Project
+
+  "startAt": Date
+  
+  "endAt": Date
+
+  "dependsOn": Project 
+  
+  */

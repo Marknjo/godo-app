@@ -3,6 +3,7 @@ import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Expose, Transform, Type } from 'class-transformer'
 import { DefaultResponseDto } from 'src/common/dtos/default-response.dto'
 import { EProjectTypes } from '../enums/e-project-types.enum'
+import { EProjectTypeBehavior } from '../enums/e-project-type-behavior.enum'
 
 export class SlimProjectResponseDto {
   @Expose()
@@ -13,6 +14,9 @@ export class SlimProjectResponseDto {
 
   @Expose()
   projectType?: EProjectTypes
+
+  @Expose()
+  projectTypeBehavior?: EProjectTypeBehavior
 
   @Expose()
   stages?: Array<EProjectStages | string>
@@ -48,6 +52,12 @@ export class SlimProjectResponseDto {
 export class ProjectResponseDto extends DefaultResponseDto {
   @Expose()
   title: string
+
+  @Expose()
+  projectType?: EProjectTypes
+
+  @Expose()
+  projectTypeBehavior?: EProjectTypeBehavior
 
   @Expose()
   description?: string
