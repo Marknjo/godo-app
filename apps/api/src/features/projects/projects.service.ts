@@ -111,13 +111,69 @@ export class ProjectsService {
         createProjectDto,
       )
 
+      let message: string
+      let foundProject: MergeType<
+        TProjectDoc,
+        {
+          createdAt: string
+          updatedAt: string
+        }
+      >
+      // find parent project user is trying to create
+      if (createProjectDto?.rootParentId) {
+        foundProject = await this.projectModel.findById(
+          createProjectDto?.rootParentId,
+        )
+
+        // @TODO: check - don't add tasks to normal/non-leafy projects
+
+        if (
+          foundProject &&
+          foundProject.projectTypeBehavior === EProjectTypeBehavior.LEAFY
+        ) {
+          const withTasks = await foundProject.populate<{ tasks: TTodoDoc }>(
+            'tasks',
+          )
+
+          if (withTasks?.tasks) {
+            message = `The root project you are trying to associate this sub-projects have tasks associated at its root. Please, update all these tasks to associate them with either this sub-project or other relevant sub-projects & convert is to normal`
+          } else {
+            // if no tasks, update leafy to normal
+            withTasks.projectTypeBehavior = EProjectTypeBehavior.NORMAL
+            await withTasks.save()
+          }
+        }
+      }
+
       // can now create a new project
       let newProject: TProjectDoc
 
+      if (!foundProject) {
+        newProject = await this.projectModel.create(createProjectDto)
+      }
+
+      // reusing the handle
+      if (foundProject) {
+        Object.entries(createProjectDto).forEach(([key, value]) => {
+          foundProject[key] = value
+        })
+
+        //clean: remove unnecessary fields
+        foundProject.id = undefined
+        foundProject._id = undefined
+        foundProject.createdAt = undefined
+        foundProject.updatedAt = undefined
+        foundProject.__v = undefined
+
+        foundProject.isNew = true
+        newProject = await foundProject.save()
+      }
+
+      // always populate
       newProject = await newProject.populate(this.populateConfigs())
 
       return {
-        message: 'A new project was successfully created',
+        message: message || 'A new project was successfully created',
         data: newProject,
       }
     } catch (error) {
