@@ -65,19 +65,19 @@ export class Project {
   projectType: EProjectTypes
 
   @Prop({
-    schema: SchemaTypes.ObjectId,
+    type: SchemaTypes.ObjectId,
     ref: 'Project',
   })
   rootParentId?: Project
 
   @Prop({
-    schema: SchemaTypes.ObjectId,
+    type: SchemaTypes.ObjectId,
     ref: 'Project',
   })
   dependsOn?: Project
 
   @Prop({
-    schema: SchemaTypes.ObjectId,
+    type: SchemaTypes.ObjectId,
     ref: 'Project',
   })
   subParentId?: Project
