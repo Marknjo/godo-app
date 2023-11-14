@@ -311,10 +311,10 @@ export class ProjectsService {
       { path: 'rootParentId' },
       { path: 'subParentId' },
       { path: 'tasks' },
-      { path: 'tasks.parentId' },
-      { path: 'tasks.subParentId' },
-      { path: 'tasks.iconId' },
-      { path: 'tasks.userId' },
+      { path: 'tasks.parentId', strictPopulate: false },
+      { path: 'tasks.subParentId', strictPopulate: false },
+      { path: 'tasks.iconId', strictPopulate: false },
+      { path: 'tasks.userId', strictPopulate: false },
     ]
   }
 }
