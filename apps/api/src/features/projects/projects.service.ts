@@ -47,6 +47,21 @@ export class ProjectsService {
       // confirm is user is creating a new root project
       const whoIs = this.factoryUtils.whoIs(activeUser)
 
+      if (createProjectDto?.endAt) {
+        const endAt = new Date(createProjectDto?.endAt).getTime()
+        const now = Date.now()
+
+        if (now > endAt) {
+          this.logger.warn(
+            `User is trying to create a project using a due data that is in the past`,
+          )
+
+          throw new BadRequestException(
+            `Can't create a project with the due date at the past`,
+          )
+        }
+      }
+
       if (
         (!createProjectDto?.projectType ||
           createProjectDto?.projectType === EProjectTypes.ROOT) &&
