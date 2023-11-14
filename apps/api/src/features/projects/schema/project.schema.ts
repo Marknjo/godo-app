@@ -4,6 +4,7 @@ import { EProjectStages } from '../enums/e-project-stages.enum'
 import { Icon } from 'src/features/icons/schema/icon.schema'
 import { Todo } from 'src/features/todos/schema/todo.schema'
 import { EProjectTypes } from '../enums/e-project-types.enum'
+import { EProjectTypeBehavior } from '../enums/e-project-type-behavior.enum'
 
 @Schema({
   toJSON: { virtuals: true },
@@ -65,6 +66,18 @@ export class Project {
   projectType: EProjectTypes
 
   @Prop({
+    type: String,
+    enum: {
+      values: [...Object.values(EProjectTypeBehavior)],
+      message: `Received {VALUE}, while expects project to be ${Object.values(
+        EProjectTypeBehavior,
+      ).join(' or ')}`,
+    },
+    default: EProjectTypeBehavior.NORMAL,
+  })
+  projectTypeBehavior?: EProjectTypeBehavior
+
+  @Prop({
     type: SchemaTypes.ObjectId,
     ref: 'Project',
   })
@@ -95,6 +108,6 @@ export type TProjectDoc = HydratedDocument<Project>
 ProjectSchema.virtual('tasks', {
   foreignField: 'projectId',
   localField: '_id',
-  ref: Todo,
+  ref: 'Todo',
   count: true,
 })
