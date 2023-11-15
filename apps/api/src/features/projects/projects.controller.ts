@@ -53,41 +53,41 @@ export class ProjectsController {
     return this.ProjectsService.findAll(filters, activeUser)
   }
 
-  @Get(':ProjectId')
+  @Get(':projectId')
   findOne(
-    @Param('ProjectId', PerseMongoIdPipe) ProjectId: string,
+    @Param('projectId', PerseMongoIdPipe) projectId: string,
     @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.ProjectsService.findOne(ProjectId, activeUser)
+    return this.ProjectsService.findOne(projectId, activeUser)
   }
 
-  @Patch(':ProjectId')
+  @Patch(':projectId')
   update(
-    @Param('ProjectId', PerseMongoIdPipe) ProjectId: string,
+    @Param('projectId', PerseMongoIdPipe) projectId: string,
     @Body() updateProjectDto: UpdateProjectDto,
     @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.ProjectsService.update(ProjectId, updateProjectDto, activeUser)
+    return this.ProjectsService.update(projectId, updateProjectDto, activeUser)
   }
 
-  @Patch(':ProjectId')
+  @Patch(':projectId')
   toggleStatus(
-    @Param('ProjectId', PerseMongoIdPipe) ProjectId: string,
+    @Param('projectId', PerseMongoIdPipe) projectId: string,
     @Body() toggleStatusDto: ToggleProjectStatusDto,
     @ActiveUser() activeUser: IActiveUser,
   ) {
     return this.ProjectsService.toggleStatus(
-      ProjectId,
+      projectId,
       toggleStatusDto,
       activeUser,
     )
   }
 
-  @Delete(':ProjectId')
+  @Delete(':projectId')
   remove(
-    @Param('ProjectId', PerseMongoIdPipe) ProjectId: string,
+    @Param('projectId', PerseMongoIdPipe) projectId: string,
     @ActiveUser() activeUser: IActiveUser,
   ) {
-    return this.ProjectsService.remove(ProjectId, activeUser)
+    return this.ProjectsService.remove(projectId, activeUser)
   }
 }

@@ -101,12 +101,12 @@ export class TodosController {
   @RestrictToRole(...eGeneralUsers, ...eAllMembersMap)
   @Patch(':todoId')
   toggleStatus(
-    @Param('todoId', PerseMongoIdPipe) ProjectId: string,
+    @Param('todoId', PerseMongoIdPipe) projectId: string,
     @Body() toggleStatusDto: ToggleTodoStatusDto,
     @ActiveUser() activeUser: IActiveUser,
   ) {
     return this.todosService.toggleStatus(
-      ProjectId,
+      projectId,
       toggleStatusDto,
       activeUser,
     )

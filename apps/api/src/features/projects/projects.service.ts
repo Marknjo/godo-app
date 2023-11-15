@@ -23,6 +23,7 @@ import { UsersService } from 'src/iam/users/users.service'
 import { EProjectTypes } from './enums/e-project-types.enum'
 import { EProjectTypeBehavior } from './enums/e-project-type-behavior.enum'
 import { TTodoDoc } from '../todos/schema/todo.schema'
+import { User } from 'src/iam/users/schema/user.schema'
 
 @Injectable()
 export class ProjectsService {
@@ -155,6 +156,7 @@ export class ProjectsService {
           } else {
             // if no tasks, update leafy to normal
             withTasks.projectTypeBehavior = EProjectTypeBehavior.NORMAL
+
             await withTasks.save()
           }
         }
@@ -164,7 +166,10 @@ export class ProjectsService {
       let newProject: TProjectDoc
 
       if (!foundProject) {
-        newProject = await this.projectModel.create(createProjectDto)
+        newProject = await this.projectModel.create({
+          ...createProjectDto,
+          userId: activeUser.sub as unknown as User,
+        })
       }
 
       // reusing the handle
@@ -179,6 +184,9 @@ export class ProjectsService {
         foundProject.createdAt = undefined
         foundProject.updatedAt = undefined
         foundProject.__v = undefined
+
+        // add user
+        foundProject.userId = activeUser.sub as unknown as User
 
         foundProject.isNew = true
         newProject = await foundProject.save()
@@ -250,34 +258,34 @@ export class ProjectsService {
     }
   }
 
-  findAll(filters: FilterQuery<Project>, activeUser: IActiveUser) {
+  async findAll(filters: FilterQuery<Project>, activeUser: IActiveUser) {
     // aggregation
     // or just find all
     return `This action returns all Projects`
   }
 
-  findOne(ProjectId: string, activeUser: IActiveUser) {
-    return `This action returns a #${ProjectId} Project`
+  findOne(projectId: string, activeUser: IActiveUser) {
+    return `This action returns a #${projectId} Project`
   }
 
   update(
-    ProjectId: string,
+    projectId: string,
     updateProjectDto: Partial<UpdateProjectDto | ToggleProjectStatusDto>,
     activeUser: IActiveUser,
   ) {
-    return `This action updates a #${ProjectId} Project`
+    return `This action updates a #${projectId} Project`
   }
 
   toggleStatus(
-    ProjectId: string,
+    projectId: string,
     toggleStatusDto: ToggleProjectStatusDto,
     activeUser: IActiveUser,
   ) {
     return `toggleStatus`
   }
 
-  remove(ProjectId: string, activeUser: IActiveUser) {
-    return `This action removes a #${ProjectId} Project`
+  remove(projectId: string, activeUser: IActiveUser) {
+    return `This action removes a #${projectId} Project`
   }
 
   /**

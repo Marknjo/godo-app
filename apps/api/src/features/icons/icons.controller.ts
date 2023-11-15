@@ -63,10 +63,10 @@ export class IconsController {
 
   @Patch(':iconId')
   toggleStatus(
-    @Param('iconId', PerseMongoIdPipe) ProjectId: string,
+    @Param('iconId', PerseMongoIdPipe) projectId: string,
     @Body() toggleStatusDto: ToggleIconsStatusDto,
   ) {
-    return this.iconsService.toggleStatus(ProjectId, toggleStatusDto)
+    return this.iconsService.toggleStatus(projectId, toggleStatusDto)
   }
 
   @Delete(':iconId')

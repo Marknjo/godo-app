@@ -121,6 +121,9 @@ export class AccessTokenGuard implements CanActivate {
       totalProjects,
     } as IActiveUser
 
+    // @TODO: Remove in production
+    console.log('\n 🚩🚩🚩', { reqOptions }, '\n\n')
+
     req[ACTIVE_USER_KEY] = reqOptions
   }
 

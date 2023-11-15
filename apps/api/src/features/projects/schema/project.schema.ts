@@ -5,6 +5,7 @@ import { Icon } from 'src/features/icons/schema/icon.schema'
 import { Todo } from 'src/features/todos/schema/todo.schema'
 import { EProjectTypes } from '../enums/e-project-types.enum'
 import { EProjectTypeBehavior } from '../enums/e-project-type-behavior.enum'
+import { User } from 'src/iam/users/schema/user.schema'
 
 @Schema({
   toJSON: { virtuals: true },
@@ -30,6 +31,12 @@ export class Project {
     ref: 'Icon',
   })
   iconsId?: Icon
+
+  @Prop({
+    type: SchemaTypes.ObjectId,
+    ref: 'User',
+  })
+  userId: User
 
   @Prop({
     default: true,
