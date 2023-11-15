@@ -199,7 +199,7 @@ export class ProjectsService {
       }
 
       // always populate
-      newProject = await newProject.populate(this.populateConfigs())
+      newProject = await newProject.populate(this.populateConfigs(true))
 
       return {
         message: message || 'A new project was successfully created',
@@ -264,14 +264,20 @@ export class ProjectsService {
     }
   }
 
-  async findAll(filters: FilterQuery<Project>, activeUser: IActiveUser) {
+  async findAll(
+    filters: FilterQuery<Project>,
+    activeUser: IActiveUser,
+    canPopIds: boolean = true,
+  ) {
     const projects = await this.projectModel
       .find({
         userId: activeUser.sub,
         ...filters,
       })
       .sort('-createdAt')
-      .populate(this.populateConfigs())
+      .populate(this.populateConfigs(canPopIds))
+
+    // console.log(projects)
 
     return {
       data: projects,
@@ -291,6 +297,7 @@ export class ProjectsService {
         ],
       },
       activeUser,
+      false,
     )
 
     if (projects.data.length === 0) {
@@ -384,11 +391,15 @@ export class ProjectsService {
    * Pre configure populate fields
    * @returns
    */
-  private populateConfigs(): PopulateOptions[] {
+  private populateConfigs(popParentIds: boolean = false): PopulateOptions[] {
     return [
-      { path: 'dependsOn' },
-      { path: 'rootParentId' },
-      { path: 'subParentId' },
+      ...(popParentIds
+        ? [
+            { path: 'rootParentId', select: 'id title' },
+            { path: 'subParentId', select: 'id title' },
+          ]
+        : []),
+      { path: 'dependsOn', select: 'id title' },
       { path: 'tasks' },
       { path: 'tasks.parentId', strictPopulate: false },
       { path: 'tasks.subParentId', strictPopulate: false },
