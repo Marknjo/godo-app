@@ -278,8 +278,30 @@ export class ProjectsService {
     }
   }
 
-  findOne(projectId: string, activeUser: IActiveUser) {
-    return `This action returns a #${projectId} Project`
+  async findOne(projectId: string, activeUser: IActiveUser) {
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+
+    // find one & all its direct children
+    const projects = await this.findAll(
+      {
+        $or: [
+          { _id: projectId },
+          { rootParentId: projectId },
+          { subParentId: projectId },
+        ],
+      },
+      activeUser,
+    )
+
+    if (projects.data.length === 0) {
+      this.logger.warn(
+        `User (${whoIs}) is trying to find a project that is not available in their collection`,
+      )
+
+      throw new NotFoundException(`Could not find the requested project`)
+    }
+
+    return projects
   }
 
   update(
@@ -310,6 +332,26 @@ export class ProjectsService {
    * ---------------------------------------
    *
    */
+  private async findProjectHelper(projectId: string, activeUser: IActiveUser) {
+    let foundProject = await this.projectModel.findOne({
+      _id: projectId,
+      userId: activeUser.sub,
+    })
+
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+
+    if (!foundProject) {
+      this.logger.warn(
+        `User (${whoIs}) is trying to find a project that is not available in their collection`,
+      )
+
+      throw new NotFoundException(`Could not find the requested project`)
+    }
+
+    foundProject = await foundProject.populate(this.populateConfigs())
+
+    return foundProject
+  }
 
   /**
    * Updates user total projects
