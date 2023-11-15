@@ -158,6 +158,12 @@ export class ProjectsService {
             withTasks.projectTypeBehavior = EProjectTypeBehavior.NORMAL
 
             await withTasks.save()
+
+            this.logger.log(
+              `A leafy project was automatically converted to a normal root project`,
+            )
+
+            message = `You've successfully created a sub-project based on a leafy project and since the root project did not have tasks, we've successfully converted it to normal root project`
           }
         }
       }
@@ -259,9 +265,17 @@ export class ProjectsService {
   }
 
   async findAll(filters: FilterQuery<Project>, activeUser: IActiveUser) {
-    // aggregation
-    // or just find all
-    return `This action returns all Projects`
+    const projects = await this.projectModel
+      .find({
+        userId: activeUser.sub,
+        ...filters,
+      })
+      .sort('-createdAt')
+      .populate(this.populateConfigs())
+
+    return {
+      data: projects,
+    }
   }
 
   findOne(projectId: string, activeUser: IActiveUser) {
