@@ -31,7 +31,7 @@ import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decora
 @AccessAuth(EAccessAuthTypes.ROLE)
 @Auth(EAuthTypes.BEARER)
 @Controller({
-  path: 'Projects',
+  path: 'projects',
   version: '1',
 })
 export class ProjectsController {
@@ -45,7 +45,7 @@ export class ProjectsController {
     return this.ProjectsService.create(createProjectDto, activeUser)
   }
 
-  @Get()
+  @Get('/all') // /projects -> get
   findAll(
     @Query() filters: FilterQuery<Project>,
     @ActiveUser() activeUser: IActiveUser,
@@ -53,7 +53,7 @@ export class ProjectsController {
     return this.ProjectsService.findAll(filters, activeUser)
   }
 
-  @Get(':projectId')
+  @Get(':projectId') // /projects/:id
   findOne(
     @Param('projectId', PerseMongoIdPipe) projectId: string,
     @ActiveUser() activeUser: IActiveUser,
@@ -70,7 +70,7 @@ export class ProjectsController {
     return this.ProjectsService.update(projectId, updateProjectDto, activeUser)
   }
 
-  @Patch(':projectId')
+  @Patch('/toggle-status/:projectId')
   toggleStatus(
     @Param('projectId', PerseMongoIdPipe) projectId: string,
     @Body() toggleStatusDto: ToggleProjectStatusDto,
