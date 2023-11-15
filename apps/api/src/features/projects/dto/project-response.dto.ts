@@ -11,45 +11,9 @@ export class SlimProjectResponseDto {
 
   @Expose()
   title: string
-
-  @Expose()
-  projectType?: EProjectTypes
-
-  @Expose()
-  projectTypeBehavior?: EProjectTypeBehavior
-
-  @Expose()
-  stages?: Array<EProjectStages | string>
-
-  @Expose()
-  progressStage?: EProjectStages | string
-
-  @Expose()
-  @Transform(({ value }) => value?.toString())
-  rootParentId?: string
-
-  @Expose()
-  @Transform(({ value }) => value?.toString())
-  subParentId?: string
-
-  @Expose()
-  totalSubProjects: number
-
-  @Expose()
-  totalProjectTodos: number
-
-  @Expose()
-  @Type(() => SlimProjectResponseDto)
-  dependsOn?: SlimProjectResponseDto
-
-  @Expose()
-  endAt?: string
-
-  @Expose()
-  startAt?: string
 }
 
-export class ProjectResponseDto extends DefaultResponseDto {
+export class ProjectResponseBaseDto extends DefaultResponseDto {
   @Expose()
   title: string
 
@@ -75,18 +39,6 @@ export class ProjectResponseDto extends DefaultResponseDto {
   progressStage?: EProjectStages | string
 
   @Expose()
-  @Type(() => SlimProjectResponseDto)
-  rootParentId?: SlimProjectResponseDto
-
-  @Expose()
-  @Type(() => SlimProjectResponseDto)
-  subParentId?: SlimProjectResponseDto
-
-  @Expose()
-  @Type(() => SlimProjectResponseDto)
-  dependsOn?: SlimProjectResponseDto
-
-  @Expose()
   totalSubProjects: number
 
   @Expose()
@@ -97,4 +49,28 @@ export class ProjectResponseDto extends DefaultResponseDto {
 
   @Expose()
   startAt?: string
+
+  @Expose()
+  @Type(() => SlimProjectResponseDto)
+  dependsOn?: SlimProjectResponseDto
+}
+
+export class ProjectResponseDto extends ProjectResponseBaseDto {
+  @Expose()
+  @Type(() => SlimProjectResponseDto)
+  rootParentId?: SlimProjectResponseDto
+
+  @Expose()
+  @Type(() => SlimProjectResponseDto)
+  subParentId?: SlimProjectResponseDto
+}
+
+export class ProjectResponseIdsUnSerializedDto extends ProjectResponseBaseDto {
+  @Expose()
+  @Transform(({ value }) => value?.toString())
+  rootParentId?: string
+
+  @Expose()
+  @Transform(({ value }) => value?.toString())
+  subParentId?: string
 }

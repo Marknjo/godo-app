@@ -14,7 +14,10 @@ import { UpdateProjectDto } from './dto/update-project.dto'
 import { PerseMongoIdPipe } from 'src/common/pipes/perse-mongo-id.pipe'
 import { ToggleProjectStatusDto } from './dto/toggle-project-status.dto'
 import { Serialize } from 'src/common/decorators/serialize.decorator'
-import { ProjectResponseDto } from './dto/project-response.dto'
+import {
+  ProjectResponseDto,
+  ProjectResponseIdsUnSerializedDto,
+} from './dto/project-response.dto'
 import { Auth } from 'src/iam/authentication/decorators/auth.decorator'
 import { EAuthTypes } from 'src/iam/authentication/enums/e-auth-types.enum'
 import { AccessAuth } from 'src/iam/authorization/decorators/access-auth.decorator'
@@ -53,6 +56,7 @@ export class ProjectsController {
     return this.ProjectsService.findAll(filters, activeUser)
   }
 
+  @Serialize(ProjectResponseIdsUnSerializedDto)
   @Get(':projectId') // /projects/:id
   findOne(
     @Param('projectId', PerseMongoIdPipe) projectId: string,
