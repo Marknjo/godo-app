@@ -52,7 +52,7 @@ export class Project {
   @Prop({
     default: 0,
   })
-  totalProjectTodos: number
+  totalProjectTasks: number
 
   @Prop({
     index: true,
