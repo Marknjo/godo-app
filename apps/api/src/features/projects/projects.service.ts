@@ -136,34 +136,42 @@ export class ProjectsService {
         }
       >
       // find parent project user is trying to create
-      if (createProjectDto?.rootParentId) {
+      if (createProjectDto?.subParentId || createProjectDto?.rootParentId) {
         foundProject = await this.projectModel.findById(
-          createProjectDto?.rootParentId,
+          createProjectDto?.subParentId || createProjectDto?.rootParentId,
         )
 
-        // @TODO: check - don't add tasks to normal/non-leafy projects
+        // @TODO: check - don't add tasks to root:branch or sub-project:branch projects
 
-        if (
+        const isRootLeafy =
           foundProject &&
-          foundProject.projectTypeBehavior === EProjectTypeBehavior.LEAFY
-        ) {
+          foundProject.projectTypeBehavior === EProjectTypeBehavior.LEAFY &&
+          foundProject.projectType === EProjectTypes.ROOT
+
+        const isSubProjectLeafy =
+          foundProject &&
+          foundProject.projectTypeBehavior === EProjectTypeBehavior.LEAFY &&
+          foundProject.projectType === EProjectTypes.SUB_PROJECT
+
+        if (isSubProjectLeafy || isRootLeafy) {
           const withTasks = await foundProject.populate<{ tasks: TTodoDoc }>(
             'tasks',
           )
 
+          const typeBh = isRootLeafy ? 'root project' : 'sub-project'
+
+          // if no tasks, update leafy to normal - lock the leafy project
+          withTasks.projectTypeBehavior = EProjectTypeBehavior.BRANCH
+          await withTasks.save()
+
           if (withTasks?.tasks) {
-            message = `The root project you are trying to associate this sub-projects have tasks associated at its root. Please, update all these tasks to associate them with either this sub-project or other relevant sub-projects & convert is to normal`
+            message = `The ${typeBh} you are trying to associate this sub-project has tasks as its direct children. Please, move all these tasks into their associated relevant sub-projects`
           } else {
-            // if no tasks, update leafy to normal
-            withTasks.projectTypeBehavior = EProjectTypeBehavior.BRANCH
-
-            await withTasks.save()
-
             this.logger.log(
-              `A leafy project was automatically converted to a normal root project`,
+              `A leafy ${typeBh} was automatically converted to a branch project`,
             )
 
-            message = `You've successfully created a sub-project based on a leafy project and since the root project did not have tasks, we've successfully converted it to normal root project`
+            message = `You've successfully created a sub-project based on a leafy ${typeBh}. Please note, you cannot add more tasks directly to this project`
           }
         }
       }
