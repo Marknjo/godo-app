@@ -155,7 +155,7 @@ export class ProjectsService {
             message = `The root project you are trying to associate this sub-projects have tasks associated at its root. Please, update all these tasks to associate them with either this sub-project or other relevant sub-projects & convert is to normal`
           } else {
             // if no tasks, update leafy to normal
-            withTasks.projectTypeBehavior = EProjectTypeBehavior.NORMAL
+            withTasks.projectTypeBehavior = EProjectTypeBehavior.BRANCH
 
             await withTasks.save()
 

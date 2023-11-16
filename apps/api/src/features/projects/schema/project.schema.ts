@@ -80,7 +80,7 @@ export class Project {
         EProjectTypeBehavior,
       ).join(' or ')}`,
     },
-    default: EProjectTypeBehavior.NORMAL,
+    default: EProjectTypeBehavior.BRANCH,
   })
   projectTypeBehavior?: EProjectTypeBehavior
 
