@@ -47,6 +47,9 @@ export class ProjectsService {
     try {
       // confirm is user is creating a new root project
       const whoIs = this.factoryUtils.whoIs(activeUser)
+      const subParentId = createProjectDto?.subParentId
+      const isChildProject = !!subParentId
+      const rootParentId = createProjectDto?.rootParentId
 
       // 🚦 Validator
       this.throwIfEndAtIsDue(createProjectDto, whoIs, 'create')
@@ -56,6 +59,13 @@ export class ProjectsService {
         createProjectDto,
         whoIs,
         'creating',
+      )
+
+      // 🚦 Validator
+      this.throwIfSimilarRootProjectIdAndSubProjectId(
+        subParentId,
+        rootParentId,
+        whoIs,
       )
 
       if (
@@ -478,6 +488,30 @@ export class ProjectsService {
 
       throw new BadRequestException(
         `Can't ${action} a project with the due date; a date in the past`,
+      )
+    }
+  }
+
+  /**
+   * Ensures a users does not add similar project ids in root and sub-parent projects
+   * @param subParentId
+   * @param rootParentId
+   * @param whoIs
+   * @param action
+   */
+  private throwIfSimilarRootProjectIdAndSubProjectId(
+    subParentId: Project,
+    rootParentId: Project,
+    whoIs: string,
+    action: 'creating' | 'updating' = 'creating',
+  ) {
+    if (subParentId && rootParentId && subParentId === rootParentId) {
+      this.logger.warn(
+        `User (${whoIs}) is ${action} a sub-project with similar root and sub-project id`,
+      )
+
+      throw new BadRequestException(
+        `Ensure Root project and sub-project is different`,
       )
     }
   }
