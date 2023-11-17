@@ -60,6 +60,8 @@ export class ProjectsService {
 
       const rootParentId = createProjectDto?.rootParentId
 
+      const userSubscription = activeUser.baseRole
+
       // 🚦 Validator
       this.throwIfEndAtIsDue(createProjectDto, whoIs, 'create')
 
@@ -86,21 +88,10 @@ export class ProjectsService {
         whoIs,
       )
 
-      // ensure  a sub-project has parent project id
-      if (
-        createProjectDto?.projectType === EProjectTypes.SUB_PROJECT &&
-        !createProjectDto?.rootParentId
-      ) {
-        this.logger.warn(
-          `User ${whoIs} is creating a sub project without it's id`,
-        )
+      // 🚦 Validator
+      this.throwIfChildLacksRootProjectId(createProjectDto, whoIs)
 
-        throw new BadRequestException(`A sub-project requires it's parent id`)
-      }
       // get user total projects & check if has reached max limit
-
-      const userSubscription = activeUser.baseRole
-
       if (
         userSubscription === EPremiumSubscribers.GUEST_USER ||
         userSubscription === EPremiumSubscribers.STANDARD_USER
@@ -125,6 +116,7 @@ export class ProjectsService {
           )
         }
       }
+
       // update user with totalProjects - we can use transactions
       await this.updateTotalProjects(
         totalProjects,
@@ -550,6 +542,28 @@ export class ProjectsService {
       throw new BadRequestException(
         `Looks like you are ${action} ${type}, however, your request includes a dependant project? Do you intend to create a sub-project instead?`,
       )
+    }
+  }
+
+  /**
+   * Ensures a sub-project has parent project id
+   *
+   * @param createProjectDto
+   * @param whoIs
+   */
+  private throwIfChildLacksRootProjectId(
+    createProjectDto: CreateProjectDto,
+    whoIs: string,
+  ) {
+    if (
+      createProjectDto?.projectType === EProjectTypes.SUB_PROJECT &&
+      !createProjectDto?.rootParentId
+    ) {
+      this.logger.warn(
+        `User ${whoIs} is creating a sub project without it's id`,
+      )
+
+      throw new BadRequestException(`A sub-project requires it's parent id`)
     }
   }
 }
