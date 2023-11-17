@@ -91,31 +91,12 @@ export class ProjectsService {
       // 🚦 Validator
       this.throwIfChildLacksRootProjectId(createProjectDto, whoIs)
 
-      // get user total projects & check if has reached max limit
-      if (
-        userSubscription === EPremiumSubscribers.GUEST_USER ||
-        userSubscription === EPremiumSubscribers.STANDARD_USER
-      ) {
-        const guest = EPremiumSubscribers.GUEST_USER
-        const standard = EPremiumSubscribers.STANDARD_USER
-
-        const maxProjects = {
-          [guest]: this.MAX_GUEST_SUBSCRIBER_PROJECTS,
-          [standard]: this.MAX_STANDARD_SUBSCRIBER_PROJECTS,
-        }
-
-        const newTotalPr = totalProjects + 1
-
-        if (newTotalPr > maxProjects[userSubscription]) {
-          this.logger.warn(
-            `User ${whoIs} is trying to add more projects beyond the max limit`,
-          )
-
-          throw new PaymentRequiredException(
-            'Please upgrade your account to enjoy more projects',
-          )
-        }
-      }
+      // 🚦 Validator
+      this.throwIfSubscriberHasHitMaxLimit(
+        userSubscription,
+        totalProjects,
+        whoIs,
+      )
 
       // update user with totalProjects - we can use transactions
       await this.updateTotalProjects(
@@ -426,6 +407,44 @@ export class ProjectsService {
    * ------------------------------------
    *         🚦 VALIDATIONS
    */
+
+  /**
+   *  Ensures a subscriber does not exceed the max limit projects
+   *
+   * @param userSubscription
+   * @param totalProjects
+   * @param whoIs
+   */
+  private throwIfSubscriberHasHitMaxLimit(
+    userSubscription: EPremiumSubscribers,
+    totalProjects: number,
+    whoIs: string,
+  ) {
+    if (
+      userSubscription === EPremiumSubscribers.GUEST_USER ||
+      userSubscription === EPremiumSubscribers.STANDARD_USER
+    ) {
+      const guest = EPremiumSubscribers.GUEST_USER
+      const standard = EPremiumSubscribers.STANDARD_USER
+
+      const maxProjects = {
+        [guest]: this.MAX_GUEST_SUBSCRIBER_PROJECTS,
+        [standard]: this.MAX_STANDARD_SUBSCRIBER_PROJECTS,
+      }
+
+      const newTotalPr = totalProjects + 1
+
+      if (newTotalPr > maxProjects[userSubscription]) {
+        this.logger.warn(
+          `User ${whoIs} is trying to add more projects beyond the max limit`,
+        )
+
+        throw new PaymentRequiredException(
+          'Please upgrade your account to enjoy more projects',
+        )
+      }
+    }
+  }
 
   /**
    * Ensures user does not provide an end date that is less than start date
