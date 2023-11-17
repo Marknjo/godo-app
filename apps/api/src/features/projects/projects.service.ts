@@ -45,10 +45,19 @@ export class ProjectsService {
     const totalProjects = activeUser.totalProjects
 
     try {
-      // confirm is user is creating a new root project
+      // ⛳ Prep constants
       const whoIs = this.factoryUtils.whoIs(activeUser)
+
       const subParentId = createProjectDto?.subParentId
-      const isChildProject = !!subParentId
+
+      const isRootLeafy =
+        createProjectDto?.projectTypeBehavior === EProjectTypeBehavior.LEAFY &&
+        createProjectDto?.projectType === EProjectTypes.ROOT
+
+      const isRootBranch =
+        createProjectDto?.projectTypeBehavior === EProjectTypeBehavior.BRANCH &&
+        createProjectDto?.projectType === EProjectTypes.ROOT
+
       const rootParentId = createProjectDto?.rootParentId
 
       // 🚦 Validator
@@ -68,23 +77,14 @@ export class ProjectsService {
         whoIs,
       )
 
-      if (
-        (!createProjectDto?.projectType ||
-          createProjectDto?.projectType === EProjectTypes.ROOT) &&
-        (createProjectDto?.rootParentId || createProjectDto?.subParentId)
-      ) {
-        this.logger.warn(
-          `User ${whoIs} is trying to create a new root project but has also supplied a ${
-            createProjectDto?.rootParentId
-              ? 'root parent id'
-              : 'sub root parent id'
-          }`,
-        )
-
-        throw new BadRequestException(
-          `Looks like you are creating a new project? However your request includes dependencies to another project? Do you intend to create a sub-project?`,
-        )
-      }
+      // 🚦 Validator
+      this.throwIfRootProjectsHasDependantId(
+        isRootLeafy,
+        isRootBranch,
+        rootParentId,
+        subParentId,
+        whoIs,
+      )
 
       // ensure  a sub-project has parent project id
       if (
@@ -512,6 +512,43 @@ export class ProjectsService {
 
       throw new BadRequestException(
         `Ensure Root project and sub-project is different`,
+      )
+    }
+  }
+
+  /**
+   * Ensures a new root project does not have a rootProjectId or parentParentId
+   * All root projects ids do not depend on other projects, unless
+   * demoted correctly
+   *
+   * @param isRootLeafy
+   * @param isRootBranch
+   * @param rootParentId
+   * @param subParentId
+   * @param whoIs
+   * @param action
+   */
+  private throwIfRootProjectsHasDependantId(
+    isRootLeafy: boolean,
+    isRootBranch: boolean,
+    rootParentId: Project,
+    subParentId: Project,
+    whoIs: string,
+    action: 'creating' | 'updating' = 'creating',
+  ) {
+    if ((isRootLeafy || isRootBranch) && (rootParentId || subParentId)) {
+      this.logger.warn(
+        `User ${whoIs} is ${action} a new root project but has also supplied a ${
+          rootParentId ? 'root parent id' : 'sub root parent id'
+        }`,
+      )
+
+      const type = isRootLeafy
+        ? 'a leafy root project'
+        : 'a branch root project'
+
+      throw new BadRequestException(
+        `Looks like you are ${action} ${type}, however, your request includes a dependant project? Do you intend to create a sub-project instead?`,
       )
     }
   }
