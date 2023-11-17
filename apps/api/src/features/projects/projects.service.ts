@@ -48,20 +48,8 @@ export class ProjectsService {
       // confirm is user is creating a new root project
       const whoIs = this.factoryUtils.whoIs(activeUser)
 
-      if (createProjectDto?.endAt) {
-        const endAt = new Date(createProjectDto?.endAt).getTime()
-        const now = Date.now()
-
-        if (now > endAt) {
-          this.logger.warn(
-            `User is trying to create a project using a due data that is in the past`,
-          )
-
-          throw new BadRequestException(
-            `Can't create a project with the due date at the past`,
-          )
-        }
-      }
+      // 🚦 Validation
+      this.throwIfEndAtIsDue(createProjectDto, whoIs, 'create')
 
       if (
         (!createProjectDto?.projectType ||
@@ -324,7 +312,16 @@ export class ProjectsService {
     updateProjectDto: Partial<UpdateProjectDto | ToggleProjectStatusDto>,
     activeUser: IActiveUser,
   ) {
-    return `This action updates a #${projectId} Project`
+    // prevent updating endAt in the past
+    // startAt cannot be greater than endAt
+    // user cannot add same rootParentId with subProjectId
+    // cannot add rootParentId & subParentId to the root:branch or root:leafy
+    // a project cannot depend on itself
+    // a parent project cannot depend on it's child
+    // if demoting a root parent to a sub-parent, then user must provide a subRootId - update parent to branch if leafy
+    // cannot add a project stage that does not exists
+
+    return
   }
 
   toggleStatus(
@@ -414,5 +411,38 @@ export class ProjectsService {
       { path: 'tasks.iconId', strictPopulate: false },
       { path: 'tasks.userId', strictPopulate: false },
     ]
+  }
+
+  /**
+   * ------------------------------------
+   *         🚦 VALIDATIONS
+   */
+
+  /**
+   * Ensure endAt Date is in the future
+   * @param createProjectDto
+   * @param whoIs
+   * @param action
+   * @returns
+   */
+  private throwIfEndAtIsDue(
+    createProjectDto: CreateProjectDto,
+    whoIs: string,
+    action: 'create' | 'update',
+  ) {
+    if (!createProjectDto?.endAt) return
+
+    const endAt = new Date(createProjectDto?.endAt).getTime()
+    const now = Date.now()
+
+    if (now > endAt) {
+      this.logger.warn(
+        `User (${whoIs}) is trying to ${action} a project using a due data; a date in the past`,
+      )
+
+      throw new BadRequestException(
+        `Can't ${action} a project with the due date; a date in the past`,
+      )
+    }
   }
 }
