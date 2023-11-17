@@ -48,8 +48,15 @@ export class ProjectsService {
       // confirm is user is creating a new root project
       const whoIs = this.factoryUtils.whoIs(activeUser)
 
-      // 🚦 Validation
+      // 🚦 Validator
       this.throwIfEndAtIsDue(createProjectDto, whoIs, 'create')
+
+      // 🚦 Validator
+      this.throwIfStartAtIsGreaterThanEndAtDate(
+        createProjectDto,
+        whoIs,
+        'creating',
+      )
 
       if (
         (!createProjectDto?.projectType ||
@@ -417,6 +424,35 @@ export class ProjectsService {
    * ------------------------------------
    *         🚦 VALIDATIONS
    */
+
+  /**
+   * Ensures user does not provide an end date that is less than start date
+   *
+   * @param createProjectDto
+   * @param whoIs
+   * @param action
+   */
+  private throwIfStartAtIsGreaterThanEndAtDate(
+    createProjectDto: CreateProjectDto,
+    whoIs: string,
+    action: 'creating' | 'updating',
+  ) {
+    if (createProjectDto?.endAt && createProjectDto?.startAt) {
+      const startAtMil = new Date(createProjectDto?.startAt).getTime()
+
+      const endAtAtMil = new Date(createProjectDto?.startAt).getTime()
+
+      if (startAtMil > endAtAtMil) {
+        this.logger.warn(
+          `User (${whoIs}) is ${action} a new project with startAt greater than endAt`,
+        )
+
+        throw new BadRequestException(
+          `Ensure end date of a project is greater than start date`,
+        )
+      }
+    }
+  }
 
   /**
    * Ensure endAt Date is in the future
