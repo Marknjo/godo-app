@@ -13,7 +13,7 @@ import { UpdateProjectDto } from './dto/update-project.dto'
 import { ToggleProjectStatusDto } from './dto/toggle-project-status.dto'
 import { InjectModel } from '@nestjs/mongoose'
 import { Project, TProjectDoc } from './schema/project.schema'
-import { FilterQuery, MergeType, Model, PopulateOptions } from 'mongoose'
+import { FilterQuery, MergeType, Model, PopulateOptions, Types } from 'mongoose'
 import { IActiveUser } from 'src/iam/interfaces/i-active-user'
 import { FactoryUtils } from 'src/common/services/factory.utils'
 import { EPremiumSubscribers } from 'src/iam/enums/e-roles.enum'
@@ -297,21 +297,123 @@ export class ProjectsService {
     return projects
   }
 
-  update(
+  async update(
     projectId: string,
-    updateProjectDto: Partial<UpdateProjectDto | ToggleProjectStatusDto>,
+    updateProjectDto: Partial<UpdateProjectDto & ToggleProjectStatusDto>,
     activeUser: IActiveUser,
   ) {
+    // ⛳ Prep constants
+    const whoIs = this.factoryUtils.whoIs(activeUser)
+    const rootParentId = updateProjectDto?.rootParentId
+    const subParentId = updateProjectDto?.subParentId
+
     // prevent updating endAt in the past
+    this.throwIfEndAtIsDue(updateProjectDto, whoIs, 'update')
+
     // startAt cannot be greater than endAt
+    this.throwIfStartAtIsGreaterThanEndAtDate(
+      updateProjectDto,
+      whoIs,
+      'updating',
+    )
+
+    let foundProject = await this.findProjectHelper(projectId, activeUser)
+
+    const fpRootProjectId = foundProject?.rootParentId
+    const fpSubProjectId = foundProject?.subParentId
+
+    const isRootLeafy =
+      foundProject.projectTypeBehavior === EProjectTypeBehavior.LEAFY &&
+      foundProject.projectType === EProjectTypes.ROOT
+
+    const isRootBranch =
+      foundProject.projectTypeBehavior === EProjectTypeBehavior.BRANCH &&
+      foundProject.projectType === EProjectTypes.ROOT
+
+    const isRootProject = isRootBranch || isRootLeafy
+
+    if (!isRootProject) {
+      foundProject = await foundProject.populate<{
+        rootParentId: TProjectDoc
+        subParentId: TProjectDoc
+      }>([{ path: 'rootParentId' }, { path: 'subParentId' }])
+    }
+
     // user cannot add same rootParentId with subProjectId
+    if (subParentId || rootParentId)
+      this.throwIfSimilarRootProjectIdAndSubProjectId(
+        subParentId || fpRootProjectId,
+        rootParentId || fpSubProjectId,
+        whoIs,
+        'updating',
+      )
+
     // cannot add rootParentId & subParentId to the root:branch or root:leafy
+    this.throwIfRootProjectsHasDependantId(
+      isRootLeafy,
+      isRootBranch,
+      rootParentId,
+      subParentId,
+      whoIs,
+      'updating',
+    )
+
     // a project cannot depend on itself
+    const fpId = foundProject.id
+    if (
+      (rootParentId || subParentId) &&
+      (rootParentId === fpId || subParentId === fpId)
+    ) {
+      this.logger.warn(
+        `User (${whoIs}) is trying to update a project dependency with its current id`,
+      )
+
+      throw new BadRequestException(`Projects should not depend on themselves`)
+    }
+
+    // @TODO: swapping - should be delegated
+
     // a parent project cannot depend on it's child
+    if (subParentId) {
+      const subParentDoc = await this.findProjectHelper(
+        subParentId.toString(),
+        activeUser,
+      )
+
+      if (subParentDoc.id === fpId) {
+        this.logger.warn(
+          `User (${whoIs}) is creating a relationship that makes a parent project depend on it's child`,
+        )
+
+        throw new BadRequestException(
+          `A parent project can only depend on other parent projects but not it's children`,
+        )
+      }
+    }
+
     // if demoting a root parent to a sub-parent, then user must provide a subRootId - update parent to branch if leafy
     // cannot add a project stage that does not exists
 
-    return
+    const updatedProject = await this.projectModel.updateOne(
+      {
+        userId: activeUser.sub,
+        _id: projectId,
+        ...(rootParentId
+          ? {
+              rootParentId: {
+                $exists: true,
+                $eq: new Types.ObjectId(rootParentId.toString()),
+              },
+            }
+          : {}),
+      },
+      updateProjectDto,
+      {
+        new: true,
+      },
+    )
+
+    return updatedProject
   }
 
   toggleStatus(
@@ -454,7 +556,7 @@ export class ProjectsService {
    * @param action
    */
   private throwIfStartAtIsGreaterThanEndAtDate(
-    createProjectDto: CreateProjectDto,
+    createProjectDto: Partial<CreateProjectDto & ToggleProjectStatusDto>,
     whoIs: string,
     action: 'creating' | 'updating',
   ) {
@@ -477,19 +579,19 @@ export class ProjectsService {
 
   /**
    * Ensure endAt Date is in the future
-   * @param createProjectDto
+   * @param projectDto
    * @param whoIs
    * @param action
    * @returns
    */
   private throwIfEndAtIsDue(
-    createProjectDto: CreateProjectDto,
+    projectDto: Partial<CreateProjectDto & ToggleProjectStatusDto>,
     whoIs: string,
     action: 'create' | 'update',
   ) {
-    if (!createProjectDto?.endAt) return
+    if (!projectDto?.endAt) return
 
-    const endAt = new Date(createProjectDto?.endAt).getTime()
+    const endAt = new Date(projectDto?.endAt).getTime()
     const now = Date.now()
 
     if (now > endAt) {
